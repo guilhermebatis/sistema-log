@@ -3,7 +3,7 @@ from .config import Config
 from .extensions import db, migrate
 from sqlalchemy import text
 from app.routes.health import health_bp
-
+from app import models
 
 def create_app():
     # APP
