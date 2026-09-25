@@ -1,140 +1,34 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "base.html" %}
 
-    <title>Editar cliente</title>
+{% block content %}
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            padding: 40px;
-            font-family: Arial, sans-serif;
-            background-color: #f4f6f8;
-            color: #333;
-        }
-
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .form-container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
-        }
-
-        h1 {
-            margin-top: 0;
-            margin-bottom: 25px;
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: bold;
-        }
-
-        input {
-            width: 100%;
-            padding: 11px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 15px;
-        }
-
-        input:focus {
-            outline: none;
-            border-color: #2563eb;
-        }
-
-        .buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 25px;
-        }
-
-        button,
-        .cancel {
-            padding: 11px 18px;
-            border: none;
-            border-radius: 6px;
-            font-size: 15px;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        button {
-            background-color: #2563eb;
-            color: white;
-        }
-
-        button:hover {
-            background-color: #1d4ed8;
-        }
-
-        .cancel {
-            background-color: #ddd;
-            color: #333;
-        }
-
-                .message {
-            padding: 12px;
-            margin-bottom: 16px;
-            border-radius: 6px;
-        }
-
-        .message.success {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .message.danger {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-    </style>
-</head>
-
-<body>
-
-<div class="container">
-
-    <div class="form-container">
+    <main class="form-page">
 
         <h1>Editar cliente</h1>
 
-        {% for category, message in get_flashed_messages(with_categories=true) %}
-           <div class="message {{ category }}">{{ message }}</div>
-        {% endfor %}
+        <p>
+            Altere os dados abaixo para atualizar o cliente no sistema.
+        </p>
 
-        <form method="POST"
-              action="{{ url_for('client.client_update', id=data.id) }}">
+        <form
+            method="POST"
+            action="{{ url_for('client.client_update', id=data.id) }}"
+        >
 
-            <div class="form-group">
-                <label for="name">Nome</label>
+            <div class="field">
+                <label for="name">Nome completo</label>
 
                 <input
                     type="text"
                     id="name"
                     name="name"
                     value="{{ data.name }}"
+                    maxlength="100"
                     required
                 >
             </div>
 
-            <div class="form-group">
+            <div class="field">
                 <label for="CPF_CNPJ">CPF/CNPJ</label>
 
                 <input
@@ -142,53 +36,49 @@
                     id="CPF_CNPJ"
                     name="CPF_CNPJ"
                     value="{{ data.CPF_CNPJ }}"
+                    maxlength="15"
                     required
                 >
             </div>
 
-            <div class="form-group">
-                <label for="email">Email</label>
+            <div class="field">
+                <label for="email">E-mail</label>
 
                 <input
                     type="email"
                     id="email"
                     name="email"
                     value="{{ data.email or '' }}"
+                    maxlength="100"
                 >
             </div>
 
-            <div class="form-group">
+            <div class="field">
                 <label for="phone">Telefone</label>
 
                 <input
-                    type="text"
+                    type="tel"
                     id="phone"
                     name="phone"
                     value="{{ data.phone }}"
+                    maxlength="100"
                     required
                 >
             </div>
 
-            <div class="buttons">
+            <button type="submit">
+                Salvar alterações
+            </button>
 
-                <button type="submit">
-                    Salvar alterações
-                </button>
-
-                <a
-                    href="{{ url_for('client.client') }}"
-                    class="cancel"
-                >
-                    Cancelar
-                </a>
-
-            </div>
+            <a
+                href="{{ url_for('client.client') }}"
+                class="cancel"
+            >
+                Cancelar
+            </a>
 
         </form>
 
-    </div>
+    </main>
 
-</div>
-
-</body>
-</html>
+{% endblock %}

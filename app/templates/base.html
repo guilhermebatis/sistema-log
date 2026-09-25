@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Base</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <nav>
+        <div><h1>LOG Logogistica</h1></div>
+
+        <div>
+            <div class="nav-item">
+                <a href="#">Clientes</a>
+
+                <div class="dropdown">
+                    <a href="{{ url_for('client.client') }}">Clientes</a>
+                    <a href="{{ url_for('client.create_client') }}">Criar cliente</a>
+                </div>
+            </div>
+    </nav>
+
+        {% for category, message in get_flashed_messages(with_categories=true) %}
+           <div class="message {{ category }}">{{ message }}</div>
+        {% endfor %}
+
+    {% block content %}
+    {% endblock %}
+
+</body>
+</html>
