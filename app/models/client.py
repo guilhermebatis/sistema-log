@@ -10,4 +10,4 @@ class Client(db.Model):
     phone = db.Column(db.String(100), nullable=False)
     created_at = db.Column(db.Date, default=date.today)
 
-    orders = db.relationship("OrderService", back_populates="client")
+    orders_service = db.relationship("OrderService", back_populates="client")

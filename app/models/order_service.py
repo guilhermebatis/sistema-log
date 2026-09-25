@@ -26,7 +26,7 @@ class OrderService(db.Model):
                        default=OrderStatus.PENDING)
 
     client = db.relationship("Client", back_populates="orders_service")
-    order_item = db.relationship("Order_item", back_populates="order")
+    order_item = db.relationship("OrderItem", back_populates="order")
     deliveries = db.relationship("Delivery", back_populates="order_service")
 
 
