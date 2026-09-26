@@ -20,6 +20,18 @@
                     <a href="{{ url_for('client.create_client') }}">Criar cliente</a>
                 </div>
             </div>
+        </div>
+        <div>
+            <div class="nav-item">
+                <a href="#">Veiculos</a>
+
+                <div class="dropdown">
+                    <a href="{{ url_for('vehicle.index') }}">Veiculos</a>
+                    <a href="{{ url_for('vehicle.create_vehicle') }}">Criar veiculo</a>
+                </div>
+            </div>
+        </div>
+
     </nav>
 
         {% for category, message in get_flashed_messages(with_categories=true) %}

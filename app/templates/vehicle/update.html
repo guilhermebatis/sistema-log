@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<main class="form-page">
+
+    <h1>Editar veículo</h1>
+
+    <p>
+        Altere os dados abaixo para atualizar o veículo no sistema.
+    </p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+
+            {% for category, message in messages %}
+                <div class="message {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+
+        {% endif %}
+    {% endwith %}
+
+    <form
+        method="POST"
+        action="{{ url_for('vehicle.update_vehicle', id=data.id) }}"
+    >
+
+        <div class="field">
+
+            <label for="license_plate">
+                Placa
+            </label>
+
+            <input
+                type="text"
+                id="license_plate"
+                name="license_plate"
+                value="{{ data.license_plate }}"
+                maxlength="20"
+                required
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="model">
+                Modelo
+            </label>
+
+            <input
+                type="text"
+                id="model"
+                name="model"
+                value="{{ data.model }}"
+                maxlength="100"
+                required
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="cargo_capacity_kg">
+                Capacidade de carga (KG)
+            </label>
+
+            <input
+                type="number"
+                id="cargo_capacity_kg"
+                name="cargo_capacity_kg"
+                value="{{ data.cargo_capacity_kg }}"
+                min="1"
+                required
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="cargo_capacity_m3">
+                Capacidade de carga (M³)
+            </label>
+
+            <input
+                type="number"
+                id="cargo_capacity_m3"
+                name="cargo_capacity_m3"
+                value="{{ data.cargo_capacity_m3 }}"
+                min="0.01"
+                step="0.01"
+                required
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="axle_count">
+                Quantidade de eixos
+            </label>
+
+            <input
+                type="number"
+                id="axle_count"
+                name="axle_count"
+                value="{{ data.axle_count }}"
+                min="1"
+                required
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="odometer">
+                Odômetro
+            </label>
+
+            <input
+                type="number"
+                id="odometer"
+                name="odometer"
+                value="{{ data.odometer }}"
+                min="0"
+                required
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="status">
+                Status
+            </label>
+
+            <select id="status" name="status">
+
+                <option
+                    value="AVAILABLE"
+                    {% if data.status.value == "AVAILABLE" %}selected{% endif %}
+                >
+                    Disponível
+                </option>
+
+                <option
+                    value="MAINTENANCE"
+                    {% if data.status.value == "MAINTENANCE" %}selected{% endif %}
+                >
+                    Em manutenção
+                </option>
+
+                <option
+                    value="UNAVAILABLE"
+                    {% if data.status.value == "UNAVAILABLE" %}selected{% endif %}
+                >
+                    Indisponível
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="fuel_type">
+                Tipo de combustível
+            </label>
+
+            <select id="fuel_type" name="fuel_type">
+
+                <option
+                    value="DIESEL"
+                    {% if data.fuel_type.value == "DIESEL" %}selected{% endif %}
+                >
+                    Diesel
+                </option>
+
+                <option
+                    value="GASOLINE"
+                    {% if data.fuel_type.value == "GASOLINE" %}selected{% endif %}
+                >
+                    Gasolina
+                </option>
+
+                <option
+                    value="ETHANOL"
+                    {% if data.fuel_type.value == "ETHANOL" %}selected{% endif %}
+                >
+                    Etanol
+                </option>
+
+                <option
+                    value="FLEX"
+                    {% if data.fuel_type.value == "FLEX" %}selected{% endif %}
+                >
+                    Flex
+                </option>
+
+                <option
+                    value="ELECTRIC"
+                    {% if data.fuel_type.value == "ELECTRIC" %}selected{% endif %}
+                >
+                    Elétrico
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <button type="submit">
+            Salvar alterações
+        </button>
+
+        <a
+            href="{{ url_for('vehicle.index') }}"
+            class="cancel"
+        >
+            Cancelar
+        </a>
+
+    </form>
+
+</main>
+
+{% endblock %}

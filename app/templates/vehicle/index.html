@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<main class="container">
+
+    <div class="top-bar">
+
+        <div>
+            <h1>Veículos</h1>
+            <p>Gerencie os veículos cadastrados no sistema.</p>
+        </div>
+
+        <a href="{{ url_for('vehicle.create_vehicle') }}" class="btn">
+            Novo veículo
+        </a>
+
+    </div>
+
+    <div class="table-container">
+
+        {% if data %}
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Placa</th>
+                        <th>Modelo</th>
+                        <th>Capacidade KG</th>
+                        <th>Capacidade M³</th>
+                        <th>Eixos</th>
+                        <th>Odômetro</th>
+                        <th>Status</th>
+                        <th>Combustível</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for vehicle in data %}
+
+                        <tr>
+
+                            <td>{{ vehicle.id }}</td>
+
+                            <td>{{ vehicle.license_plate }}</td>
+
+                            <td>{{ vehicle.model }}</td>
+
+                            <td>{{ vehicle.cargo_capacity_kg }}</td>
+
+                            <td>{{ vehicle.cargo_capacity_m3 }}</td>
+
+                            <td>{{ vehicle.axle_count }}</td>
+
+                            <td>{{ vehicle.odometer }}</td>
+
+                            <td>
+                                {% if vehicle.status.value == "AVAILABLE" %}
+                                    Disponível
+                                {% elif vehicle.status.value == "MAINTENANCE" %}
+                                    Em manutenção
+                                {% elif vehicle.status.value == "UNAVAILABLE" %}
+                                    Indisponível
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% if vehicle.fuel_type.value == "DIESEL" %}
+                                    Diesel
+                                {% elif vehicle.fuel_type.value == "GASOLINE" %}
+                                    Gasolina
+                                {% elif vehicle.fuel_type.value == "ETHANOL" %}
+                                    Etanol
+                                {% elif vehicle.fuel_type.value == "FLEX" %}
+                                    Flex
+                                {% elif vehicle.fuel_type.value == "ELECTRIC" %}
+                                    Elétrico
+                                {% endif %}
+                            </td>
+
+                            <td>
+
+                                <div class="actions">
+
+                                    <a
+                                        href="{{ url_for('vehicle.update_vehicle', id=vehicle.id) }}"
+                                        class="action-btn edit-btn"
+                                    >
+                                        Atualizar
+                                    </a>
+
+                                    <form
+                                        method="POST"
+                                        action="{{ url_for('vehicle.delete_vehicle', id=vehicle.id) }}"
+                                    >
+                                        <button
+                                            type="submit"
+                                            class="action-btn delete-btn"
+                                        >
+                                            Excluir
+                                        </button>
+                                    </form>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        {% else %}
+
+            <div class="empty">
+                Nenhum veículo cadastrado.
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</main>
+
+{% endblock %}

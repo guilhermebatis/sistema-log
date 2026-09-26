@@ -234,6 +234,19 @@ tr:hover {
     font-size: 16px;
 }
 
+.field select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+.field select:focus {
+    outline: 2px solid #93c5fd;
+    border-color: var(--primary);
+}
+
 .field input:focus {
     outline: 2px solid #93c5fd;
     border-color: var(--primary);
