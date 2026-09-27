@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<main class="form-page">
+
+    <h1>Editar motorista</h1>
+
+    <p>
+        Altere os dados abaixo para atualizar o motorista no sistema.
+    </p>
+
+
+    <form
+        method="POST"
+        action="{{ url_for('driver.driver_update', id=data.id) }}"
+    >
+
+        <div class="field">
+
+            <label for="name">
+                Nome
+            </label>
+
+            <input
+                type="text"
+                id="name"
+                name="name"
+                value="{{ data.name }}"
+                maxlength="100"
+                required
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="cnh">
+                CNH
+            </label>
+
+            <input
+                type="text"
+                id="cnh"
+                name="cnh"
+                value="{{ data.cnh }}"
+                maxlength="40"
+                required
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="phone">
+                Telefone
+            </label>
+
+            <input
+                type="text"
+                id="phone"
+                name="phone"
+                value="{{ data.phone }}"
+                maxlength="20"
+                required
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="admission_date">
+                Data de admissão
+            </label>
+
+            <input
+                type="date"
+                id="admission_date"
+                name="admission_date"
+                value="{{ data.admission_date.strftime('%Y-%m-%d') }}"
+                required
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="licence_category">
+                Categoria da CNH
+            </label>
+
+            <select
+                id="licence_category"
+                name="licence_category"
+                required
+            >
+
+                <option value="A"
+                    {% if data.licence_category.value == "A" %}selected{% endif %}
+                >
+                    A
+                </option>
+
+                <option value="B"
+                    {% if data.licence_category.value == "B" %}selected{% endif %}
+                >
+                    B
+                </option>
+
+                <option value="C"
+                    {% if data.licence_category.value == "C" %}selected{% endif %}
+                >
+                    C
+                </option>
+
+                <option value="D"
+                    {% if data.licence_category.value == "D" %}selected{% endif %}
+                >
+                    D
+                </option>
+
+                <option value="E"
+                    {% if data.licence_category.value == "E" %}selected{% endif %}
+                >
+                    E
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="license_expiration_date">
+                Vencimento da CNH
+            </label>
+
+            <input
+                type="date"
+                id="license_expiration_date"
+                name="license_expiration_date"
+                value="{{ data.license_expiration_date.strftime('%Y-%m-%d') }}"
+                required
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="status">
+                Status
+            </label>
+
+            <select
+                id="status"
+                name="status"
+                required
+            >
+
+                <option value="AVAILABLE"
+                    {% if data.status.value == "AVAILABLE" %}selected{% endif %}
+                >
+                    Disponível
+                </option>
+
+                <option value="IN_ROUTE"
+                    {% if data.status.value == "IN_ROUTE" %}selected{% endif %}
+                >
+                    Em rota
+                </option>
+
+                <option value="UNAVAILABLE"
+                    {% if data.status.value == "UNAVAILABLE" %}selected{% endif %}
+                >
+                    Indisponível
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <button type="submit">
+            Salvar alterações
+        </button>
+
+
+        <a
+            href="{{ url_for('driver.index') }}"
+            class="cancel"
+        >
+            Cancelar
+        </a>
+
+    </form>
+
+</main>
+
+{% endblock %}

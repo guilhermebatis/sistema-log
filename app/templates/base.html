@@ -9,7 +9,7 @@
 <body>
 
     <nav>
-        <div><h1>LOG Logogistica</h1></div>
+        <div><h1>LOG Logistica</h1></div>
 
         <div>
             <div class="nav-item">
@@ -31,6 +31,17 @@
                 </div>
             </div>
         </div>
+        <div>
+            <div class="nav-item">
+                <a href="#">Motoristas</a>
+
+                <div class="dropdown">
+                    <a href="{{ url_for('driver.index') }}">Motoristas</a>
+                    <a href="{{ url_for('driver.driver_create') }}">Criar Motoristas</a>
+                </div>
+            </div>
+        </div>
+
 
     </nav>
 

@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<main class="container">
+
+    <div class="top-bar">
+        <div>
+            <h1>Motoristas</h1>
+            <p>Gerencie os motoristas cadastrados no sistema.</p>
+        </div>
+
+        <a href="{{ url_for('driver.driver_create') }}" class="btn">
+            Novo motorista
+        </a>
+    </div>
+
+
+    <div class="table-container">
+
+        {% if data %}
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>CNH</th>
+                        <th>Telefone</th>
+                        <th>Admissão</th>
+                        <th>Categoria</th>
+                        <th>Vencimento CNH</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for driver in data %}
+
+                        <tr>
+
+                            <td>{{ driver.id }}</td>
+
+                            <td>{{ driver.name }}</td>
+
+                            <td>{{ driver.cnh }}</td>
+
+                            <td>{{ driver.phone }}</td>
+
+                            <td>{{ driver.admission_date.strftime('%d/%m/%Y') }}</td>
+
+                            <td>{{ driver.licence_category.value }}</td>
+
+                            <td>
+                                {{ driver.license_expiration_date.strftime('%d/%m/%Y') }}
+                            </td>
+
+                            <td>
+
+                                {% if driver.status.value == "AVAILABLE" %}
+                                    Disponível
+
+                                {% elif driver.status.value == "IN_ROUTE" %}
+                                    Em rota
+
+                                {% elif driver.status.value == "UNAVAILABLE" %}
+                                    Indisponível
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+
+                                <div class="actions">
+
+                                    <a
+                                        href="{{ url_for('driver.driver_update', id=driver.id) }}"
+                                        class="action-btn edit-btn"
+                                    >
+                                        Atualizar
+                                    </a>
+
+                                    <form
+                                        method="POST"
+                                        action="{{ url_for('driver.driver_delete', id=driver.id) }}"
+                                    >
+
+                                        <button
+                                            type="submit"
+                                            class="action-btn delete-btn"
+                                        >
+                                            Excluir
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        {% else %}
+
+            <div class="empty">
+                Nenhum motorista cadastrado.
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</main>
+
+{% endblock %}

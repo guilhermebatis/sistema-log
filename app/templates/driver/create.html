@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<main class="form-page">
+
+    <h1>Cadastrar motorista</h1>
+
+    <p>
+        Preencha os dados abaixo para cadastrar um novo motorista no sistema.
+    </p>
+
+
+    <form method="POST">
+
+        <div class="field">
+
+            <label for="name">
+                Nome
+            </label>
+
+            <input
+                type="text"
+                id="name"
+                name="name"
+                maxlength="100"
+                required
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="cnh">
+                CNH
+            </label>
+
+            <input
+                type="text"
+                id="cnh"
+                name="cnh"
+                maxlength="40"
+                required
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="phone">
+                Telefone
+            </label>
+
+            <input
+                type="text"
+                id="phone"
+                name="phone"
+                maxlength="20"
+                required
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="admission_date">
+                Data de admissão
+            </label>
+
+            <input
+                type="date"
+                id="admission_date"
+                name="admission_date"
+                required
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="licence_category">
+                Categoria da CNH
+            </label>
+
+            <select
+                id="licence_category"
+                name="licence_category"
+                required
+            >
+
+                <option value="">
+                    Selecione uma categoria
+                </option>
+
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+                <option value="E">E</option>
+
+            </select>
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="license_expiration_date">
+                Vencimento da CNH
+            </label>
+
+            <input
+                type="date"
+                id="license_expiration_date"
+                name="license_expiration_date"
+                required
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="status">
+                Status
+            </label>
+
+            <select
+                id="status"
+                name="status"
+                required
+            >
+
+                <option value="">
+                    Selecione um status
+                </option>
+
+                <option value="AVAILABLE">
+                    Disponível
+                </option>
+
+                <option value="IN_ROUTE">
+                    Em rota
+                </option>
+
+                <option value="UNAVAILABLE">
+                    Indisponível
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <button type="submit">
+            Cadastrar motorista
+        </button>
+
+
+        <a
+            href="{{ url_for('driver.index') }}"
+            class="cancel"
+        >
+            Cancelar
+        </a>
+
+    </form>
+
+</main>
+
+{% endblock %}

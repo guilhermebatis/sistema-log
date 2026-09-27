@@ -119,6 +119,7 @@ def delete_vehicle(id):
         flash('Error ao deletar o veiculo', 'danger')
         return redirect(url_for('vehicle.index'))
 
+
 @vehicle_bp.route('/<int:id>/update', methods=['GET', 'POST'])
 def update_vehicle(id):
     if request.method == 'GET':
