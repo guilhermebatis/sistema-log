@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="form-page">
+
+    <h1>Editar Ordem de Serviço</h1>
+
+    <form method="POST">
+
+        <div class="field">
+            <label for="client_id">Cliente</label>
+
+            <select name="client_id" id="client_id">
+                <option value="">Nenhum cliente</option>
+
+                {% for client in clients %}
+                    <option value="{{ client.id }}"
+                        {% if client.id == order.client_id %}selected{% endif %}>
+                        {{ client.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="field">
+            <label for="weight_total">Peso total (kg)</label>
+
+            <input
+                type="number"
+                id="weight_total"
+                name="weight_total"
+                step="0.01"
+                min="0"
+                value="{{ order.weight_total if order.weight_total is not none else '' }}"
+            >
+        </div>
+
+        <div class="field">
+            <label for="cubage_total">Cubagem total (m³)</label>
+
+            <input
+                type="number"
+                id="cubage_total"
+                name="cubage_total"
+                step="0.01"
+                min="0"
+                value="{{ order.cubage_total if order.cubage_total is not none else '' }}"
+            >
+        </div>
+
+        <div class="field">
+            <label for="origin">Origem</label>
+
+            <input
+                type="text"
+                id="origin"
+                name="origin"
+                maxlength="20"
+                value="{{ order.origin }}"
+                required
+            >
+        </div>
+
+        <div class="field">
+            <label for="destination">Destino</label>
+
+            <input
+                type="text"
+                id="destination"
+                name="destination"
+                maxlength="20"
+                value="{{ order.destination }}"
+                required
+            >
+        </div>
+
+        <div class="field">
+            <label for="distance">Distância (km)</label>
+
+            <input
+                type="number"
+                id="distance"
+                name="distance"
+                step="0.01"
+                min="0"
+                value="{{ order.distance }}"
+                required
+            >
+        </div>
+
+        <div class="field">
+            <label for="price">Preço</label>
+
+            <input
+                type="number"
+                id="price"
+                name="price"
+                step="0.01"
+                min="0"
+                value="{{ order.price if order.price is not none else '' }}"
+            >
+        </div>
+
+        <div class="field">
+            <label for="status">Status</label>
+
+            <select id="status" name="status" required>
+
+                <option value="PENDING"
+                    {% if order.status.value == "PENDING" %}selected{% endif %}>
+                    Pendente
+                </option>
+
+                <option value="QUOTED"
+                    {% if order.status.value == "QUOTED" %}selected{% endif %}>
+                    Cotado
+                </option>
+
+                <option value="IN_PROGRESS"
+                    {% if order.status.value == "IN_PROGRESS" %}selected{% endif %}>
+                    Em andamento
+                </option>
+
+                <option value="COMPLETED"
+                    {% if order.status.value == "COMPLETED" %}selected{% endif %}>
+                    Concluído
+                </option>
+
+                <option value="CANCELLED"
+                    {% if order.status.value == "CANCELLED" %}selected{% endif %}>
+                    Cancelado
+                </option>
+
+            </select>
+        </div>
+
+        <div class="form-actions">
+
+            <button type="submit" class="btn">
+                Salvar alterações
+            </button>
+
+            <a href="{{ url_for('orders.index') }}" class="btn cancel">
+                Cancelar
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

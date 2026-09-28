@@ -14,7 +14,7 @@ class OrderService(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     client_id = db.Column(db.Integer,
                           db.ForeignKey("client.id"),
-                          nullable=False,)
+                          )
     weight_total = db.Column(db.Numeric(10, 2))
     cubage_total = db.Column(db.Numeric(10, 2))
     origin = db.Column(db.String(20), nullable=False)

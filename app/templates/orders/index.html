@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="top-bar">
+        <h1>Ordens de Serviço</h1>
+
+        <a href="{{ url_for('orders.create_order') }}" class="btn">
+            Nova Ordem
+        </a>
+    </div>
+
+    <div class="table-container">
+
+        {% if data %}
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Cliente</th>
+                    <th>Origem</th>
+                    <th>Destino</th>
+                    <th>Distância</th>
+                    <th>Peso</th>
+                    <th>Cubagem</th>
+                    <th>Preço</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for order in data %}
+
+                <tr>
+                    <td>{{ order.id }}</td>
+
+                    <td>
+                        {{ order.client.name if order.client else order.client_id }}
+                    </td>
+
+                    <td>{{ order.origin }}</td>
+
+                    <td>{{ order.destination }}</td>
+
+                    <td>{{ order.distance }} km</td>
+
+                    <td>
+                        {{ order.weight_total if order.weight_total is not none else '-' }}
+                    </td>
+
+                    <td>
+                        {{ order.cubage_total if order.cubage_total is not none else '-' }}
+                    </td>
+
+                    <td>
+                        {% if order.price is not none %}
+                            R$ {{ "%.2f"|format(order.price) }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+
+                    <td>{{ order.status.value }}</td>
+
+                    <td class="actions">
+
+                        <a
+                            href="{{ url_for('orders.update_order', order_id=order.id) }}"
+                            class="action-btn edit-btn"
+                        >
+                            Editar
+                        </a>
+
+                        <form
+                            action="{{ url_for('orders.delete_order', order_id=order.id) }}"
+                            method="POST"
+                            style="display: inline;"
+                        >
+                            <button
+                                type="submit"
+                                class="action-btn delete-btn"
+                            >
+                                Excluir
+                            </button>
+                        </form>
+
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+        {% else %}
+
+        <div class="empty">
+            <p>Nenhuma ordem de serviço cadastrada.</p>
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}
