@@ -52,6 +52,17 @@
             </div>
         </div>
 
+        <div>
+            <div class="nav-item">
+                <a href="#">Itens da orders</a>
+
+                <div class="dropdown">
+                    <a href="{{ url_for('order_items.index') }}">Itens</a>
+                    <a href="{{ url_for('order_items.create_order_item') }}">Criar Itens</a>
+                </div>
+            </div>
+        </div>
+
 
     </nav>
 
