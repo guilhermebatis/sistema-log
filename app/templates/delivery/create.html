@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="form-page">
+
+    <h1>Nova Entrega</h1>
+
+    <form method="POST">
+
+        <div class="field">
+            <label for="order_service_id">
+                Ordem de Serviço
+            </label>
+
+            <select
+                name="order_service_id"
+                id="order_service_id"
+                required
+            >
+
+                <option value="">
+                    Selecione uma ordem de serviço
+                </option>
+
+                {% for order in order_services %}
+
+                    <option value="{{ order.id }}">
+                        #{{ order.id }} -
+                        {{ order.origin }} →
+                        {{ order.destination }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+        </div>
+
+
+        <div class="field">
+            <label for="status">
+                Status
+            </label>
+
+            <select
+                name="status"
+                id="status"
+                required
+            >
+
+                <option value="">
+                    Selecione um status
+                </option>
+
+                <option value="PENDING">
+                    Pendente
+                </option>
+
+                <option value="IN_PROGRESS">
+                    Em andamento
+                </option>
+
+                <option value="COMPLETED">
+                    Concluída
+                </option>
+
+                <option value="CANCELLED">
+                    Cancelada
+                </option>
+
+                <option value="FAILED">
+                    Falhou
+                </option>
+
+            </select>
+        </div>
+
+
+        <div class="field">
+            <label for="driver_id">
+                Motorista
+            </label>
+
+            <select
+                name="driver_id"
+                id="driver_id"
+            >
+
+                <option value="">
+                    Nenhum motorista
+                </option>
+
+                {% for driver in drivers %}
+
+                    <option value="{{ driver.id }}">
+                        #{{ driver.id }} -
+                        {{ driver.name }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+        </div>
+
+
+        <div class="field">
+            <label for="vehicle_id">
+                Veículo
+            </label>
+
+            <select
+                name="vehicle_id"
+                id="vehicle_id"
+            >
+
+                <option value="">
+                    Nenhum veículo
+                </option>
+
+                {% for vehicle in vehicles %}
+
+                    <option value="{{ vehicle.id }}">
+                        #{{ vehicle.id }} -
+                        {{ vehicle.license_plate }} -
+                        {{ vehicle.model }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+        </div>
+
+
+        <button
+        >
+            Criar Entrega
+        </button>
+
+        <a
+            href="{{ url_for('delivery.index') }}"
+            class="cancel"
+        >
+            Cancelar
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}

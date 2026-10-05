@@ -1,0 +1,283 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="top-bar">
+        <h1>Entrega #{{ deliveries.id }}</h1>
+
+        <div class="actions">
+
+            <a
+                href="{{ url_for('delivery.update_delivery', id=deliveries.id) }}"
+                class="btn"
+            >
+                Editar
+            </a>
+
+            <a
+                href="{{ url_for('delivery.index') }}"
+                class="btn cancel-btn"
+            >
+                Voltar
+            </a>
+
+        </div>
+    </div>
+
+
+    <!-- INFORMAÇÕES DA ENTREGA -->
+
+    <div class="info-card">
+
+        <h2>Informações da Entrega</h2>
+
+        <div class="info-grid">
+
+            <div class="info-item">
+                <span class="info-label">ID</span>
+                <strong>#{{ deliveries.id }}</strong>
+            </div>
+
+            <div class="info-item">
+                <span class="info-label">Status</span>
+                <strong>{{ deliveries.status.value }}</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ORDEM DE SERVIÇO -->
+
+    <div class="info-card">
+
+        <h2>Ordem de Serviço</h2>
+
+        <div class="info-grid">
+
+            <div class="info-item">
+                <span class="info-label">ID</span>
+                <strong>
+                    #{{ deliveries.order_service.id }}
+                </strong>
+            </div>
+
+            <div class="info-item">
+                <span class="info-label">Cliente</span>
+
+                <strong>
+                    {% if deliveries.order_service.client %}
+                        {{ deliveries.order_service.client.name }}
+                    {% else %}
+                        Não informado
+                    {% endif %}
+                </strong>
+            </div>
+
+            <div class="info-item">
+                <span class="info-label">Origem</span>
+
+                <strong>
+                    {{ deliveries.order_service.origin }}
+                </strong>
+            </div>
+
+            <div class="info-item">
+                <span class="info-label">Destino</span>
+
+                <strong>
+                    {{ deliveries.order_service.destination }}
+                </strong>
+            </div>
+
+            <div class="info-item">
+                <span class="info-label">Distância</span>
+
+                <strong>
+                    {{ deliveries.order_service.distance }} km
+                </strong>
+            </div>
+
+            <div class="info-item">
+                <span class="info-label">Preço</span>
+
+                <strong>
+                    {% if deliveries.order_service.price is not none %}
+                        R$ {{ "%.2f"|format(deliveries.order_service.price) }}
+                    {% else %}
+                        Não informado
+                    {% endif %}
+                </strong>
+            </div>
+
+            <div class="info-item">
+                <span class="info-label">Peso total</span>
+
+                <strong>
+                    {% if deliveries.order_service.weight_total is not none %}
+                        {{ deliveries.order_service.weight_total }} kg
+                    {% else %}
+                        Não informado
+                    {% endif %}
+                </strong>
+            </div>
+
+            <div class="info-item">
+                <span class="info-label">Cubagem total</span>
+
+                <strong>
+                    {% if deliveries.order_service.cubage_total is not none %}
+                        {{ deliveries.order_service.cubage_total }} m³
+                    {% else %}
+                        Não informado
+                    {% endif %}
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- MOTORISTA -->
+
+    <div class="info-card">
+
+        <h2>Motorista</h2>
+
+        {% if deliveries.driver %}
+
+            <div class="info-grid">
+
+                <div class="info-item">
+                    <span class="info-label">Nome</span>
+                    <strong>
+                        {{ deliveries.driver.name }}
+                    </strong>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">CNH</span>
+                    <strong>
+                        {{ deliveries.driver.cnh }}
+                    </strong>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Telefone</span>
+                    <strong>
+                        {{ deliveries.driver.phone }}
+                    </strong>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Categoria</span>
+                    <strong>
+                        {{ deliveries.driver.licence_category.value }}
+                    </strong>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Status</span>
+                    <strong>
+                        {{ deliveries.driver.status.value }}
+                    </strong>
+                </div>
+
+            </div>
+
+        {% else %}
+
+            <p class="empty">
+                Nenhum motorista atribuído.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- VEÍCULO -->
+
+    <div class="info-card">
+
+        <h2>Veículo</h2>
+
+        {% if deliveries.vehicles %}
+
+            <div class="info-grid">
+
+                <div class="info-item">
+                    <span class="info-label">Placa</span>
+                    <strong>
+                        {{ deliveries.vehicles.license_plate }}
+                    </strong>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Modelo</span>
+                    <strong>
+                        {{ deliveries.vehicles.model }}
+                    </strong>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Capacidade</span>
+                    <strong>
+                        {{ deliveries.vehicles.cargo_capacity_kg }} kg
+                    </strong>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Cubagem</span>
+                    <strong>
+                        {{ deliveries.vehicles.cargo_capacity_m3 }} m³
+                    </strong>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Eixos</span>
+                    <strong>
+                        {{ deliveries.vehicles.axle_count }}
+                    </strong>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Odômetro</span>
+                    <strong>
+                        {{ deliveries.vehicles.odometer }} km
+                    </strong>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Combustível</span>
+                    <strong>
+                        {{ deliveries.vehicles.fuel_type.value }}
+                    </strong>
+                </div>
+
+                <div class="info-item">
+                    <span class="info-label">Status</span>
+                    <strong>
+                        {{ deliveries.vehicles.status.value }}
+                    </strong>
+                </div>
+
+            </div>
+
+        {% else %}
+
+            <p class="empty">
+                Nenhum veículo atribuído.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

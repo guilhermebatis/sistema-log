@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="top-bar">
+        <h1>Entregas</h1>
+
+        <a href="{{ url_for('delivery.create_delivery') }}" class="btn">
+            Nova Entrega
+        </a>
+    </div>
+
+    {% if deliveries %}
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Ordem de Serviço</th>
+                    <th>Status</th>
+                    <th>Motorista</th>
+                    <th>Veículo</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for delivery in deliveries %}
+
+                <tr>
+
+                    <td>
+                        {{ delivery.id }}
+                    </td>
+
+                    <td>
+                        #{{ delivery.order_service_id }}
+                    </td>
+
+                    <td>
+                        {{ delivery.status.value }}
+                    </td>
+
+                    <td>
+                        {% if delivery.driver %}
+                            {{ delivery.driver.name }}
+                        {% else %}
+                            Não atribuído
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if delivery.vehicles %}
+                            {{ delivery.vehicles.license_plate }}
+                        {% else %}
+                            Não atribuído
+                        {% endif %}
+                    </td>
+
+                    <td class="actions">
+
+                        <a
+                            href="{{ url_for('delivery.info', id=delivery.id) }}"
+                            class="action-btn edit-btn"
+                        >
+                            Detalhes
+                        </a>
+
+                        <a
+                            href="{{ url_for('delivery.update_delivery', id=delivery.id) }}"
+                            class="action-btn edit-btn"
+                        >
+                            Editar
+                        </a>
+
+                        <form
+                            action="{{ url_for('delivery.delete_delivery', id=delivery.id) }}"
+                            method="POST"
+                            style="display: inline;"
+                        >
+
+                            <button
+                                type="submit"
+                                class="action-btn delete-btn"
+                            >
+                                Excluir
+                            </button>
+
+                        </form>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    {% else %}
+
+        <p class="empty">
+            Nenhuma entrega cadastrada.
+        </p>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

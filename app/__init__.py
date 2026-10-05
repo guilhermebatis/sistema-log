@@ -9,6 +9,7 @@ from app.routes.vehicle import vehicle_bp
 from app.routes.driver import  driver_bp
 from app.routes.orders import orders_bp
 from app.routes.order_items import order_items_bp
+from app.routes.delivery import delivery_bp
 
 def create_app():
     # APP
@@ -28,5 +29,6 @@ def create_app():
     app.register_blueprint(driver_bp)
     app.register_blueprint(orders_bp)
     app.register_blueprint(order_items_bp)
+    app.register_blueprint(delivery_bp)
 
     return app

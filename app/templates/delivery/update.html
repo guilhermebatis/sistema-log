@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="form-page">
+
+    <h1>Editar Entrega</h1>
+
+    <form method="POST">
+
+        <div class="field">
+            <label for="order_service_id">
+                Ordem de Serviço
+            </label>
+
+            <select
+                name="order_service_id"
+                id="order_service_id"
+                required
+            >
+
+                {% for order in order_services %}
+
+                    <option
+                        value="{{ order.id }}"
+                        {% if order.id == deliveries.order_service_id %}
+                            selected
+                        {% endif %}
+                    >
+                        #{{ order.id }} -
+                        {{ order.origin }} →
+                        {{ order.destination }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+        </div>
+
+
+        <div class="field">
+            <label for="status">
+                Status
+            </label>
+
+            <select
+                name="status"
+                id="status"
+                required
+            >
+
+                <option
+                    value="PENDING"
+                    {% if deliveries.status.value == "PENDING" %}
+                        selected
+                    {% endif %}
+                >
+                    Pendente
+                </option>
+
+                <option
+                    value="IN_PROGRESS"
+                    {% if deliveries.status.value == "IN_PROGRESS" %}
+                        selected
+                    {% endif %}
+                >
+                    Em andamento
+                </option>
+
+                <option
+                    value="COMPLETED"
+                    {% if deliveries.status.value == "COMPLETED" %}
+                        selected
+                    {% endif %}
+                >
+                    Concluída
+                </option>
+
+                <option
+                    value="CANCELLED"
+                    {% if deliveries.status.value == "CANCELLED" %}
+                        selected
+                    {% endif %}
+                >
+                    Cancelada
+                </option>
+
+                <option
+                    value="FAILED"
+                    {% if deliveries.status.value == "FAILED" %}
+                        selected
+                    {% endif %}
+                >
+                    Falhou
+                </option>
+
+            </select>
+        </div>
+
+
+        <div class="field">
+            <label for="driver_id">
+                Motorista
+            </label>
+
+            <select
+                name="driver_id"
+                id="driver_id"
+            >
+
+                <option
+                    value=""
+                    {% if not deliveries.driver_id %}
+                        selected
+                    {% endif %}
+                >
+                    Nenhum motorista
+                </option>
+
+                {% for driver in drivers %}
+
+                    <option
+                        value="{{ driver.id }}"
+                        {% if driver.id == deliveries.driver_id %}
+                            selected
+                        {% endif %}
+                    >
+                        #{{ driver.id }} -
+                        {{ driver.name }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+        </div>
+
+
+        <div class="field">
+            <label for="vehicle_id">
+                Veículo
+            </label>
+
+            <select
+                name="vehicle_id"
+                id="vehicle_id"
+            >
+
+                <option
+                    value=""
+                    {% if not deliveries.vehicle_id %}
+                        selected
+                    {% endif %}
+                >
+                    Nenhum veículo
+                </option>
+
+                {% for vehicle in vehicles %}
+
+                    <option
+                        value="{{ vehicle.id }}"
+                        {% if vehicle.id == deliveries.vehicle_id %}
+                            selected
+                        {% endif %}
+                    >
+                        #{{ vehicle.id }} -
+                        {{ vehicle.license_plate }} -
+                        {{ vehicle.model }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+        </div>
+
+
+
+
+            <button>
+                Salvar alterações
+            </button>
+
+            <a
+                href="{{ url_for('delivery.index') }}"
+                class="cancel"
+            >
+                Cancelar
+            </a>
+    </form>
+
+</div>
+
+{% endblock %}
