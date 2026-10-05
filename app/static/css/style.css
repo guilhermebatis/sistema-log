@@ -284,3 +284,44 @@ tr:hover {
 .cancel:hover {
     background-color: #d1d5db;
 }
+
+.info-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.info-card h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: var(--dark);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.info-label {
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.info-item strong {
+    font-size: 16px;
+    color: var(--text);
+}
