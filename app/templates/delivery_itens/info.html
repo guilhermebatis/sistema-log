@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="top-bar">
+
+        <div>
+            <h1>Detalhes do Item</h1>
+            <p>Informações do item associado à entrega.</p>
+        </div>
+
+        <div class="actions">
+            <a
+                href="{{ url_for('delivery_itens.update_delivery_itens', id=delivery_itens.id) }}"
+                class="btn"
+            >
+                Editar
+            </a>
+
+            <a
+                href="{{ url_for('delivery_itens.index') }}"
+                class="btn cancel-btn"
+            >
+                Voltar
+            </a>
+        </div>
+
+    </div>
+
+
+    <div class="info-card">
+
+        <h2>Informações do Item</h2>
+
+        <div class="info-grid">
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    ID
+                </span>
+
+                <strong>
+                    #{{ delivery_itens.id }}
+                </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    Peso
+                </span>
+
+                <strong>
+                    {{ delivery_itens.weight if delivery_itens.weight is not none else '-' }}
+                </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    Cubagem
+                </span>
+
+                <strong>
+                    {{ delivery_itens.cubage if delivery_itens.cubage is not none else '-' }}
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {% if delivery_itens.order_item %}
+
+    <div class="info-card">
+
+        <h2>Item da Ordem</h2>
+
+        <div class="info-grid">
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    ID
+                </span>
+
+                <strong>
+                    #{{ delivery_itens.order_item.id }}
+                </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    Descrição
+                </span>
+
+                <strong>
+                    {{ delivery_itens.order_item.description or '-' }}
+                </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    Quantidade
+                </span>
+
+                <strong>
+                    {{ delivery_itens.order_item.quantity }}
+                </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    Peso Total do Item
+                </span>
+
+                <strong>
+                    {{ delivery_itens.order_item.weight }}
+                </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    Cubagem Total do Item
+                </span>
+
+                <strong>
+                    {{ delivery_itens.order_item.cubage }}
+                </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    Preço
+                </span>
+
+                <strong>
+                    R$ {{ delivery_itens.order_item.price_item }}
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+    {% if delivery %}
+
+    <div class="info-card">
+
+        <h2>Entrega</h2>
+
+        <div class="info-grid">
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    ID da Entrega
+                </span>
+
+                <strong>
+                    #{{ delivery.id }}
+                </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    Status
+                </span>
+
+                <strong>
+                    {{ delivery.status.value }}
+                </strong>
+
+            </div>
+
+
+            {% if delivery.order_service %}
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    Origem
+                </span>
+
+                <strong>
+                    {{ delivery.order_service.origin }}
+                </strong>
+
+            </div>
+
+
+            <div class="info-item">
+
+                <span class="info-label">
+                    Destino
+                </span>
+
+                <strong>
+                    {{ delivery.order_service.destination }}
+                </strong>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+
+
+
+
+</div>
+
+{% endblock %}

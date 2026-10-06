@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="top-bar">
+        <div>
+            <h1>Itens das Entregas</h1>
+            <p>Gerencie os itens associados às entregas.</p>
+        </div>
+
+        <a href="{{ url_for('delivery_itens.create_delivery_itens') }}" class="btn">
+            Novo Item
+        </a>
+    </div>
+
+    {% if delivery_itens %}
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Item da Ordem</th>
+                        <th>Entrega</th>
+                        <th>Peso</th>
+                        <th>Cubagem</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for item in delivery_itens %}
+
+                    <tr>
+
+                        <td>{{ item.id }}</td>
+
+                        <td>
+                            {% if item.order_item %}
+                                #{{ item.order_item.id }}
+                                - {{ item.order_item.description }}
+                            {% else %}
+                                Não informado
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if item.delivery %}
+                                #{{ item.delivery.id }}
+                                -
+                                {{ item.delivery.order_service.origin }}
+                                →
+                                {{ item.delivery.order_service.destination }}
+                            {% else %}
+                                Não informado
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {{ item.weight if item.weight is not none else '-' }}
+                        </td>
+
+                        <td>
+                            {{ item.cubage if item.cubage is not none else '-' }}
+                        </td>
+
+                        <td class="actions">
+
+                            <a
+                                href="{{ url_for('delivery_itens.info', id=item.id) }}"
+                                class="action-btn edit-btn"
+                            >
+                                Detalhes
+                            </a>
+
+                            <a
+                                href="{{ url_for('delivery_itens.update_delivery_itens', id=item.id) }}"
+                                class="action-btn edit-btn"
+                            >
+                                Editar
+                            </a>
+
+                            <form
+                                action="{{ url_for('delivery_itens.delete_delivery_itens', id=item.id) }}"
+                                method="POST"
+                                style="display: inline;"
+                            >
+                                <button
+                                    type="submit"
+                                    class="action-btn delete-btn"
+                                >
+                                    Excluir
+                                </button>
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    {% else %}
+
+        <div class="empty">
+            <p>Nenhum item de entrega cadastrado.</p>
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

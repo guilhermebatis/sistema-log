@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container form-page">
+
+    <div class="top-bar">
+        <div>
+            <h1>Novo Item de Entrega</h1>
+            <p>Associe um item da ordem a uma entrega.</p>
+        </div>
+    </div>
+
+    <form method="POST">
+
+        <div class="field">
+
+            <label for="order_item_id">
+                Item da Ordem
+            </label>
+
+            <select name="order_item_id" id="order_item_id" required>
+
+                <option value="">
+                    Selecione um item
+                </option>
+
+                {% for item in order_items %}
+
+                    <option value="{{ item.id }}">
+
+                        #{{ item.id }}
+
+                        {% if item.description %}
+                            - {{ item.description }}
+                        {% endif %}
+
+                        - {{ item.quantity }} unidade(s)
+
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="delivery_id">
+                Entrega
+            </label>
+
+            <select name="delivery_id" id="delivery_id" required>
+
+                <option value="">
+                    Selecione uma entrega
+                </option>
+
+                {% for delivery in deliveries %}
+
+                    <option value="{{ delivery.id }}">
+
+                        #{{ delivery.id }}
+
+                        {% if delivery.order_service %}
+                            -
+                            {{ delivery.order_service.origin }}
+                            →
+                            {{ delivery.order_service.destination }}
+                        {% endif %}
+
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="weight">
+                Peso
+            </label>
+
+            <input
+                type="number"
+                name="weight"
+                id="weight"
+                step="0.01"
+                min="0"
+                placeholder="Ex: 150.50"
+            >
+
+        </div>
+
+
+        <div class="field">
+
+            <label for="cubage">
+                Cubagem
+            </label>
+
+            <input
+                type="number"
+                name="cubage"
+                id="cubage"
+                step="0.01"
+                min="0"
+                placeholder="Ex: 2.50"
+            >
+
+        </div>
+
+
+        <div class="form-actions">
+
+            <button type="submit" class="btn">
+                Criar Item
+            </button>
+
+            <a
+                href="{{ url_for('delivery_itens.index') }}"
+                class="btn cancel"
+            >
+                Cancelar
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}
