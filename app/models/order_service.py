@@ -1,5 +1,6 @@
 from app.extensions import db
 from enum import Enum
+from sqlalchemy import CheckConstraint
 
 
 class OrderStatus(Enum):
@@ -11,6 +12,16 @@ class OrderStatus(Enum):
 
 
 class OrderService(db.Model):
+
+    __table_args__ = (
+        CheckConstraint("weight_total >= 0",
+                        name="weight_total_nonnegative"),
+        CheckConstraint('cubage_total >= 0', name="cubage_nonnegative"),
+        CheckConstraint('distance >= 0', name="distance_nonnegative"),
+        CheckConstraint('price >= 0', name="price_nonnegative"),
+    )
+
+
     id = db.Column(db.Integer, primary_key=True)
     client_id = db.Column(db.Integer,
                           db.ForeignKey("client.id"),
@@ -31,6 +42,14 @@ class OrderService(db.Model):
 
 
 class OrderItem(db.Model):
+
+    __table_args__ = (
+        CheckConstraint("quantity >= 0", name="quantity_nonnegative"),
+        CheckConstraint("weight >= 0", name="weight_nonnegative"),
+        CheckConstraint("cubage >= 0", name="cubage_nonnegative"),
+        CheckConstraint("price_item >= 0", name="price_item_nonnegative"),
+    )
+
     id = db.Column(db.Integer, primary_key=True)
     order_service_id = db.Column(db.Integer,
                                  db.ForeignKey("order_service.id"),
