@@ -54,7 +54,7 @@ class DeliveryItem(db.Model):
                             nullable=False)
     weight = db.Column(db.Numeric(10, 2), nullable=False)
     cubage = db.Column(db.Numeric(10, 2), nullable=False)
-    quantity = db.Column(db.Integer(10, 2), nullable=False)
+    quantity = db.Column(db.Integer(), nullable=False)
 
     delivery = db.relationship("Delivery", back_populates="delivery_itens")
     order_item = db.relationship("OrderItem", back_populates="delivery_items")
