@@ -12,10 +12,13 @@ from app.routes.order_items import order_items_bp
 from app.routes.delivery import delivery_bp
 from app.routes.delivery_itens import delivery_itens_bp
 
-def create_app():
+def create_app(test_config=None):
     # APP
     app = Flask(__name__)
     app.config.from_object(Config)
+
+    if test_config is not None:
+        app.config.update(test_config)
 
     # BD AND MIGRATIONS
     db.init_app(app)
