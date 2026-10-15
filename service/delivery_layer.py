@@ -13,6 +13,12 @@ def create_delivery_item(delivery_item: DeliveryItem):
     if not delivery_item.quantity or delivery_item.quantity <= 0:
         flash('Não foi possivel criar o item da entrega, a quantidade precisa ser positiva', 'danger')
         return False
+    if not delivery_item.cubage or delivery_item.cubage < 0:
+        flash('Não foi possivel criar o item da entrega, a cubagem precisa ser positiva', 'danger')
+        return False
+    if not delivery_item.weight or delivery_item.weight < 0:
+        flash('Não foi possivel criar o item da entrega, o peso precisa ser positiva', 'danger')
+        return False
 
     ordem_item_data = db.session.execute(
         select(
@@ -47,10 +53,6 @@ def create_delivery_item(delivery_item: DeliveryItem):
         return False
 
 
-    if delivery_data.order_service_id is None:
-        flash('Não foi possivel criar o item da entrega, ordem de serviço não localizada', 'danger')
-        return False
-
     if delivery_data.order_service_id != ordem_item_data.order_service_id:
         flash('Não foi possivel criar o item da entrega, a ordem de serviço e diferente', 'danger')
         return False
@@ -58,6 +60,7 @@ def create_delivery_item(delivery_item: DeliveryItem):
     quantity_delivery = db.session.scalar(
         select(
             (func.sum(DeliveryItem.quantity))
+        )
         .join(
                 Delivery,
                 DeliveryItem.delivery_id == Delivery.id)
@@ -69,7 +72,7 @@ def create_delivery_item(delivery_item: DeliveryItem):
                 ])
             )
         )
-    )
+
 
     if quantity_delivery is None:
         quantity_delivery = 0
