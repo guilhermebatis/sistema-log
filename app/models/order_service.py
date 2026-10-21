@@ -15,10 +15,10 @@ class OrderService(db.Model):
 
     __table_args__ = (
         CheckConstraint("weight_total >= 0",
-                        name="weight_total_nonnegative"),
-        CheckConstraint('cubage_total >= 0', name="cubage_nonnegative"),
-        CheckConstraint('distance >= 0', name="distance_nonnegative"),
-        CheckConstraint('price >= 0', name="price_nonnegative"),
+                        name="ck_order_service_weight_total_nonnegative"),
+        CheckConstraint('cubage_total >= 0', name="ck_order_service_cubage_total_nonnegative"),
+        CheckConstraint('distance >= 0', name="ck_order_service_distance_nonnegative"),
+        CheckConstraint('price >= 0', name="ck_order_service_price_nonnegative"),
     )
 
 
@@ -44,10 +44,10 @@ class OrderService(db.Model):
 class OrderItem(db.Model):
 
     __table_args__ = (
-        CheckConstraint("quantity >= 0", name="quantity_nonnegative"),
-        CheckConstraint("weight >= 0", name="weight_nonnegative"),
-        CheckConstraint("cubage >= 0", name="cubage_nonnegative"),
-        CheckConstraint("price_item >= 0", name="price_item_nonnegative"),
+        CheckConstraint("quantity >= 0", name="ck_order_item_quantity_nonnegative"),
+        CheckConstraint("weight >= 0", name="ck_order_item_weight_nonnegative"),
+        CheckConstraint("cubage >= 0", name="ck_order_item_cubage_nonnegative"),
+        CheckConstraint("price_item >= 0", name="ck_order_item_price_item_nonnegative"),
     )
 
     id = db.Column(db.Integer, primary_key=True)

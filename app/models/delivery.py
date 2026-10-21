@@ -37,12 +37,9 @@ class Delivery(db.Model):
 class DeliveryItem(db.Model):
 
     __table_args__ = (
-        CheckConstraint('weight >= 0',
-                        name='weight_nonnegative'),
-        CheckConstraint('cubage >= 0',
-                        name='cubage_nonnegative'),
-        CheckConstraint('quantity >= 0',
-                        name='quantity_nonnegative'),
+        CheckConstraint("weight > 0",name="weight_positive"),
+        CheckConstraint("cubage > 0",name="cubage_positive"),
+        CheckConstraint('quantity >= 0', name='quantity_nonnegative'),
     )
 
     id = db.Column(db.Integer, primary_key=True)
