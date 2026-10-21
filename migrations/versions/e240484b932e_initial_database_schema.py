@@ -1,8 +1,8 @@
-"""create initial logistics schema
+"""initial database schema
 
-Revision ID: dd62b4870a0d
+Revision ID: e240484b932e
 Revises: 
-Create Date: 2026-09-23 05:44:58.683877
+Create Date: 2026-10-20 05:26:14.034169
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'dd62b4870a0d'
+revision = 'e240484b932e'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -60,7 +60,7 @@ def upgrade():
     )
     op.create_table('order_service',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('client_id', sa.Integer(), nullable=False),
+    sa.Column('client_id', sa.Integer(), nullable=True),
     sa.Column('weight_total', sa.Numeric(precision=10, scale=2), nullable=True),
     sa.Column('cubage_total', sa.Numeric(precision=10, scale=2), nullable=True),
     sa.Column('origin', sa.String(length=20), nullable=False),
@@ -68,6 +68,10 @@ def upgrade():
     sa.Column('distance', sa.Numeric(precision=10, scale=2), nullable=False),
     sa.Column('price', sa.Numeric(precision=10, scale=2), nullable=True),
     sa.Column('status', sa.Enum('PENDING', 'QUOTED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED', name='order_status'), nullable=False),
+    sa.CheckConstraint('weight_total >= 0', name='ck_order_service_weight_total_nonnegative'),
+    sa.CheckConstraint('cubage_total >= 0', name='ck_order_service_cubage_total_nonnegative'),
+    sa.CheckConstraint('distance >= 0', name='ck_order_service_distance_nonnegative'),
+    sa.CheckConstraint('price >= 0', name='ck_order_service_price_nonnegative'),
     sa.ForeignKeyConstraint(['client_id'], ['client.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -90,6 +94,10 @@ def upgrade():
     sa.Column('weight', sa.Numeric(precision=10, scale=2), nullable=False),
     sa.Column('cubage', sa.Numeric(precision=10, scale=2), nullable=False),
     sa.Column('price_item', sa.Numeric(precision=10, scale=2), nullable=False),
+    sa.CheckConstraint('cubage >= 0', name='ck_order_item_cubage_nonnegative'),
+    sa.CheckConstraint('price_item >= 0', name='ck_order_item_price_item_nonnegative'),
+    sa.CheckConstraint('quantity >= 0', name='ck_order_item_quantity_nonnegative'),
+    sa.CheckConstraint('weight >= 0', name='ck_order_item_weight_nonnegative'),
     sa.ForeignKeyConstraint(['order_service_id'], ['order_service.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -97,8 +105,12 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('order_item_id', sa.Integer(), nullable=False),
     sa.Column('delivery_id', sa.Integer(), nullable=False),
-    sa.Column('weight', sa.Numeric(precision=10, scale=2), nullable=True),
-    sa.Column('cubage', sa.Numeric(precision=10, scale=2), nullable=True),
+    sa.Column('weight', sa.Numeric(precision=10, scale=2), nullable=False),
+    sa.Column('cubage', sa.Numeric(precision=10, scale=2), nullable=False),
+    sa.Column('quantity', sa.Integer(), nullable=False),
+    sa.CheckConstraint('cubage > 0', name='cubage_positive'),
+    sa.CheckConstraint('quantity >= 0', name='quantity_nonnegative'),
+    sa.CheckConstraint('weight > 0', name='weight_positive'),
     sa.ForeignKeyConstraint(['delivery_id'], ['delivery.id'], ),
     sa.ForeignKeyConstraint(['order_item_id'], ['order_item.id'], ),
     sa.PrimaryKeyConstraint('id')
