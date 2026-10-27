@@ -47,8 +47,8 @@ class DeliveryItem(db.Model):
                               db.ForeignKey("order_item.id"),
                               nullable=False)
     delivery_id = db.Column(db.Integer,
-                            db.ForeignKey("delivery.id"),
-                            nullable=False)
+                            db.ForeignKey("delivery.id", ondelete="CASCADE"),
+                            nullable=False,)
     weight = db.Column(db.Numeric(10, 2), nullable=False)
     cubage = db.Column(db.Numeric(10, 2), nullable=False)
     quantity = db.Column(db.Integer(), nullable=False)
