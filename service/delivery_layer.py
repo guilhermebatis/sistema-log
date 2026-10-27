@@ -2,7 +2,7 @@ from sqlalchemy.exc import IntegrityError
 
 from flask import flash
 from app.models.delivery import StatusDelivery
-from app.models import  DeliveryItem, Delivery
+from app.models import DeliveryItem, Delivery, OrderService, Driver, Vehicle
 from app.models import OrderItem
 from sqlalchemy import func, select
 from app.extensions import db
@@ -170,4 +170,89 @@ def delete_delivery_item(delivery_item: DeliveryItem):
     except IntegrityError:
         db.session.rollback()
         flash('Error ao deletar o item da entrega', 'danger')
+        return False
+
+
+def _validade_delivery(delivery: Delivery):
+
+    order_service_data = db.session.get(OrderService, delivery.order_service_id)
+
+    if order_service_data is None:
+        flash('Não foi possivel criar a entrega, precisa da ordem de serviço', 'danger')
+        return False
+    if delivery.status is None:
+        delivery.status = StatusDelivery.PENDING
+    if not isinstance(delivery.status, StatusDelivery):
+        flash('Não foi possivel criar a entrega, precisa do status da entrega', 'danger')
+        return False
+    if delivery.driver_id is not None:
+        driver = db.session.get(Driver, delivery.driver_id)
+        if not driver:
+            flash('Não foi possivel localizar o motorista')
+            return False
+    if delivery.vehicle_id is not None:
+        vehicle = db.session.get(Vehicle, delivery.vehicle_id)
+        if not vehicle:
+            flash('Não foi possivel localizar o veiculo')
+            return False
+
+    return True
+
+
+def create_delivery(delivery: Delivery):
+
+    if not _validade_delivery(delivery):
+        return False
+
+    try:
+        db.session.add(delivery)
+        db.session.commit()
+        flash('entrega criado com sucesso', 'success')
+        return True
+    except IntegrityError:
+        db.session.rollback()
+        flash('Error ao criar a entrega', 'danger')
+        return False
+
+
+def update_delivery(delivery: Delivery):
+
+    data = db.session.get(Delivery, delivery.id)
+    if not data:
+        flash('Não foi possivel localizar a entrega', 'danger')
+        return False
+
+    if not _validade_delivery(delivery):
+        return False
+
+    data.order_service_id = delivery.order_service_id
+    data.driver_id = delivery.driver_id
+    data.vehicle_id = delivery.vehicle_id
+
+    try:
+        db.session.commit()
+        flash('Entrega atualizada com sucesso', 'success')
+        return True
+    except IntegrityError:
+        db.session.rollback()
+        flash('Error ao atualizar o entrega', 'danger')
+        return False
+
+
+def delete_delivery(delivery: Delivery):
+
+    data = db.session.get(Delivery, delivery.id)
+
+    if not data:
+        flash('Não foi possivel localizar a entrega', 'danger')
+        return False
+
+    try:
+        db.session.delete(data)
+        db.session.commit()
+        flash('Entrega deletada com sucesso', 'success')
+        return True
+    except IntegrityError:
+        db.session.rollback()
+        flash('Error ao deletar o entrega', 'danger')
         return False
