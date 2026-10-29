@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from sqlalchemy.exc import IntegrityError
 
 from app import db
 from app.models.order_service import OrderService, OrderItem
+from service.order_layer import create_order_item, update_order_item, delete_order_item
 
 order_items_bp  = Blueprint('order_items', __name__, url_prefix='/order_items')
 
@@ -27,23 +27,6 @@ def create_order_item():
         order_item_cubage = request.form.get('cubage', '').strip()
         order_item_price_item = request.form.get('price_item', '').strip()
 
-
-        if not order_item_order_service_id:
-            flash('Não foi possivel criar a ordem de serviço, falta o campo cliente', 'danger')
-            return redirect(url_for('order_items.create_order_item'))
-        if not order_item_quantity:
-            flash('Não foi possivel criar a ordem de serviço, falta o campo quantidade', 'danger')
-            return redirect(url_for('order_items.create_order_item'))
-        if not order_item_weight:
-            flash('Não foi possivel criar a ordem de serviço, falta o campo peso', 'danger')
-            return redirect(url_for('order_items.create_order_item'))
-        if not order_item_cubage:
-            flash('Não foi possivel criar a ordem de serviço, falta o campo cubagem', 'danger')
-            return redirect(url_for('order_items.create_order_item'))
-        if not order_item_price_item:
-            flash('Não foi possivel criar a ordem de serviço, falta o campo preço do item', 'danger')
-            return redirect(url_for('order_items.create_order_item'))
-
         try:
             order_item_order_service_id = int(order_item_order_service_id)
             order_item_quantity = int(order_item_quantity)
@@ -54,30 +37,20 @@ def create_order_item():
             flash('')
             return redirect(url_for('order_items.create_order_item'))
 
-        if (order_item_quantity < 0
-            or order_item_weight <0
-            or order_item_cubage <0
-            or order_item_price_item < 0):
-            flash('Não foi possivel criar a ordem de serviço, so pode ter numeros positivos', 'danger')
-            return redirect(url_for('order_items.create_order_item'))
+        order_item = OrderItem(
+            order_service_id = order_item_order_service_id,
+            quantity = order_item_quantity,
+            description = order_item_description,
+            weight = order_item_weight,
+            cubage = order_item_cubage,
+            price_item = order_item_price_item,
+        )
 
-        try:
-            new_order_item = OrderItem(
-                order_service_id = order_item_order_service_id,
-                quantity = order_item_quantity,
-                description = order_item_description,
-                weight = order_item_weight,
-                cubage = order_item_cubage,
-                price_item = order_item_price_item,
-            )
-
-            db.session.add(new_order_item)
-            db.session.commit()
-            flash('Item da ordem criado com sucesso', 'success')
+        if create_order_item(order_item):
+            flash('Item criado com sucesso', 'success')
             return redirect(url_for('order_items.index'))
-        except IntegrityError:
-            db.session.rollback()
-            flash('Nao foi possivel criar a ordem de serviço')
+        else:
+            flash('Error ao criar o item', 'danger')
             return redirect(url_for('order_items.create_order_item'))
 
 
@@ -119,23 +92,6 @@ def update_order_item(order_item_id):
         order_item_cubage = request.form.get('cubage', '').strip()
         order_item_price_item = request.form.get('price_item', '').strip()
 
-
-        if not order_item_order_service_id:
-            flash('Não foi possivel criar a ordem de serviço, falta o campo cliente', 'danger')
-            return redirect(url_for('order_items.update_order_item', order_item_id=order_item_id))
-        if not order_item_quantity:
-            flash('Não foi possivel criar a ordem de serviço, falta o campo quantidade', 'danger')
-            return redirect(url_for('order_items.update_order_item', order_item_id=order_item_id))
-        if not order_item_weight:
-            flash('Não foi possivel criar a ordem de serviço, falta o campo peso', 'danger')
-            return redirect(url_for('order_items.update_order_item', order_item_id=order_item_id))
-        if not order_item_cubage:
-            flash('Não foi possivel criar a ordem de serviço, falta o campo cubagem', 'danger')
-            return redirect(url_for('order_items.update_order_item', order_item_id=order_item_id))
-        if not order_item_price_item:
-            flash('Não foi possivel criar a ordem de serviço, falta o campo preço do item', 'danger')
-            return redirect(url_for('order_items.update_order_item', order_item_id=order_item_id))
-
         try:
             order_item_order_service_id = int(order_item_order_service_id)
             order_item_quantity = int(order_item_quantity)
@@ -146,27 +102,20 @@ def update_order_item(order_item_id):
             flash('Não foi possivel atualizar o item da ordem', 'danger')
             return redirect(url_for('order_items.update_order_item', order_item_id=order_item_id))
 
-        if (order_item_quantity < 0
-            or order_item_weight <0
-            or order_item_cubage <0
-            or order_item_price_item < 0):
-            flash('Não foi possivel criar a ordem de serviço, so pode ter numeros positivos', 'danger')
-            return redirect(url_for('order_items.update_order_item', order_item_id=order_item_id))
 
-        try:
-            data.order_service_id = order_item_order_service_id
-            data.quantity = order_item_quantity
-            data.description = order_item_description
-            data.weight = order_item_weight
-            data.cubage = order_item_cubage
-            data.price_item = order_item_price_item
+        data.order_service_id = order_item_order_service_id
+        data.quantity = order_item_quantity
+        data.description = order_item_description
+        data.weight = order_item_weight
+        data.cubage = order_item_cubage
+        data.price_item = order_item_price_item
 
-            db.session.commit()
-            flash('Item da order atualizado com sucesso', 'success')
+
+        if update_order_item(data):
+            flash('Item atualizado com sucesso', 'success')
             return redirect(url_for('order_items.index'))
-        except IntegrityError:
-            db.session.rollback()
-            flash('Error ao atualizar o item da order', 'danger')
+        else:
+            flash('Error ao atualizar o item da ordem', 'danger')
             return redirect(url_for('order_items.update_order_item', order_item_id=order_item_id))
 
 
@@ -174,16 +123,9 @@ def update_order_item(order_item_id):
 def delete_order_item(order_item_id):
     data = db.session.get(OrderItem, order_item_id)
 
-    if not data:
-        flash('Não foi possivel localizar o item da ordem', 'danger')
-        return redirect(url_for('order_items.index'))
-
-    try:
-        db.session.delete(data)
-        db.session.commit()
+    if delete_order_item(data):
         flash('Item deletado com sucesso', 'success')
         return redirect(url_for('order_items.index'))
-    except IntegrityError:
-        db.session.rollback()
+    else:
         flash('Error ao deletar o item da ordem', 'danger')
         return redirect(url_for('order_items.index'))
