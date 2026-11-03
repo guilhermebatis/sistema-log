@@ -3,6 +3,7 @@ from sqlalchemy.exc import IntegrityError
 
 from flask import flash
 from app.extensions import db
+from app.models.order_service import OrderStatus
 
 
 def _validade_order_item(order_item: OrderItem):
@@ -46,7 +47,7 @@ def update_order_item(order_item: OrderItem):
     data = db.session.get(OrderItem, order_item.id)
     if not data:
         flash('Não foi possivel localizar o item da entrega', 'danger')
-        return
+        return False
 
     data.order_service_id = order_item.order_service_id
     data.quantity = order_item.quantity
@@ -96,8 +97,7 @@ def _validate_order_service(order_service: OrderService):
         flash('O preço precisa ser positivo', 'danger')
         return False
     if not order_service.status:
-        flash('O status precisa ser preenchido', 'danger')
-        return False
+        order_service.status = OrderStatus.PENDING
     return True
 
 
@@ -123,6 +123,9 @@ def update_order_service(order_service: OrderService):
         flash('Não foi possivel localizar a ordem de serviço', 'danger')
         return False
 
+    if not _validate_order_service(order_service):
+        return False
+
     data.client_id = order_service.client_id
     data.weight_total = order_service.weight_total
     data.cubage_total = order_service.cubage_total
@@ -137,8 +140,9 @@ def update_order_service(order_service: OrderService):
         db.session.commit()
         flash('Ordem de serviço atualizado com sucesso', 'success')
         return True
-    except IntegrityError:
+    except IntegrityError as e:
         db.session.rollback()
+        print(f"Erro de integridade: {e.orig}")
         flash('Erro ao atualizar a ordem de serviço', 'danger')
         return False
 
