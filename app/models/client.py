@@ -7,7 +7,7 @@ class Client(db.Model):
     name = db.Column(db.String(100), nullable=False)
     CPF_CNPJ = db.Column(db.String(15), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=True)
-    phone = db.Column(db.String(100), nullable=False)
+    phone = db.Column(db.String(100), unique=True, nullable=False,)
     created_at = db.Column(db.Date, default=date.today)
 
     orders_service = db.relationship("OrderService", back_populates="client")
