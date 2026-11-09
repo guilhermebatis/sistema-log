@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from sqlalchemy.exc import IntegrityError
 
 from app.extensions import db
 from app.models import Client
+from service.client_layer import create_client_service, update_client_service, delete_client_service
 
 client_bp = Blueprint('client', __name__, url_prefix='/client')
 
@@ -14,19 +14,6 @@ def create_client():
         client_email = request.form.get('email', '').strip()
         client_phone = request.form.get('phone', '').strip()
 
-        if not client_name:
-            flash('Não foi possível cadastrar o cliente, falta o campo nome.', 'danger')
-            return redirect(url_for('client.create_client'))
-
-        if not client_cpf_cnpj:
-            flash('Não foi possível cadastrar o cliente, falta o campo cpf_cnpj.', 'danger')
-            return redirect(url_for('client.create_client'))
-
-        if not client_phone:
-            flash('Não foi possível cadastrar o cliente, falta o campo telefone.', 'danger')
-            return redirect(url_for('client.create_client'))
-
-
         new_client = Client(
             name = client_name,
             CPF_CNPJ = client_cpf_cnpj,
@@ -34,18 +21,10 @@ def create_client():
             phone = client_phone
         )
 
-        db.session.add(new_client)
-
-        try:
-            db.session.commit()
-            flash('Cliente criado com sucesso!', 'success')
-        except IntegrityError:
-            db.session.rollback()
-            flash('Não foi possível cadastrar o cliente.', 'danger')
-
-        return redirect(url_for('client.create_client'))
-
-    return render_template('clients/create.html')
+        if create_client_service(new_client):
+            return redirect(url_for('client.create_client'))
+        else:
+            return render_template('clients/create.html')
 
 
 @client_bp.route('/', methods=['GET'])
@@ -56,23 +35,13 @@ def client():
 
 @client_bp.route('/<int:id>/delete', methods=['POST'])
 def client_delete(id):
-    try:
-        data = db.session.get(Client, id)
 
-        if not data:
-            flash('cliente não foi encontrado!', 'danger')
-            return redirect(url_for('client.client'))
+    data = db.session.query(Client).filter(Client.id == id).one_or_none()
 
-        db.session.delete(data)
-        db.session.commit()
-        flash('Cliente deletado com sucesso!', 'success')
+    if delete_client_service(data):
         return redirect(url_for('client.client'))
-
-    except IntegrityError:
-        db.session.rollback()
-        flash('Não foi possível deletar o cliente.', 'danger')
-
-    return redirect(url_for('client.client'))
+    else:
+        return redirect(url_for('client.client'))
 
 
 @client_bp.route('/<int:id>/update', methods=['GET', 'POST'])
@@ -87,39 +56,19 @@ def client_update(id):
         return render_template('clients/edit.html', data=data)
 
     if request.method == 'POST':
-        try:
-            data = db.session.get(Client, id)
+        data = db.session.get(Client, id)
 
-            if not data:
-                flash('cliente não foi encontrado!', 'danger')
-                return redirect(url_for('client.client'))
+        client_name = request.form.get('name', '').strip()
+        client_cpf_cnpj = request.form.get('CPF_CNPJ', '').strip()
+        client_email = request.form.get('email', '').strip()
+        client_phone = request.form.get('phone', '').strip()
 
-            client_name = request.form.get('name', '').strip()
-            client_cpf_cnpj = request.form.get('CPF_CNPJ', '').strip()
-            client_email = request.form.get('email', '').strip()
-            client_phone = request.form.get('phone', '').strip()
+        data.name = client_name
+        data.CPF_CNPJ = client_cpf_cnpj
+        data.email = client_email
+        data.phone = client_phone
 
-            if not client_name:
-                flash('Não foi possível atualizar o cliente, falta o campo nome.', 'danger')
-                return redirect(url_for('client.client_update', id=id))
-
-            if not client_cpf_cnpj:
-                flash('Não foi possível atualizar o cliente, falta o campo cpf_cnpj.', 'danger')
-                return redirect(url_for('client.client_update', id=id))
-
-            if not client_phone:
-                flash('Não foi possível atualizar o cliente, falta o campo telefone.', 'danger')
-                return redirect(url_for('client.client_update', id=id))
-
-            data.name = client_name
-            data.CPF_CNPJ = client_cpf_cnpj
-            data.email = client_email
-            data.phone = client_phone
-
-            db.session.commit()
-            flash('Cliente atualizado com sucesso!', 'success')
+        if update_client_service(data):
             return redirect(url_for('client.client'))
-        except IntegrityError:
-            db.session.rollback()
-            flash('Erro ao atualizar o cliente!', 'danger')
+        else:
             return redirect(url_for('client.client_update', id=id))

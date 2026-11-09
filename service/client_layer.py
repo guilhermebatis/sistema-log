@@ -56,7 +56,7 @@ def _validate_client(client: Client):
     return True
 
 
-def create_client(client: Client):
+def create_client_service(client: Client):
 
     if not _validate_client(client):
         return False
@@ -72,7 +72,7 @@ def create_client(client: Client):
         return False
 
 
-def update_client(client: Client):
+def update_client_service(client: Client):
     if not _validate_client(client):
         return False
 
@@ -98,7 +98,7 @@ def update_client(client: Client):
         return False
 
 
-def delete_client(client: Client):
+def delete_client_service(client: Client):
 
     data = db.session.get(Client, client.id)
 
