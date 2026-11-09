@@ -1,9 +1,9 @@
 from app.models import Client
-from service.client_layer import create_client, update_client, delete_client
+from service.client_layer import create_client_service, update_client_service, delete_client_service
 from app import db
 
 
-def test_create_client(app):
+def test_create_client_service(app):
     with app.test_request_context():
 
         client = Client(
@@ -13,7 +13,7 @@ def test_create_client(app):
         phone = '987654321',
         )
 
-        result = create_client(client)
+        result = create_client_service(client)
         assert result is True
 
 
@@ -27,7 +27,7 @@ def test_update_client(app):
         phone = '987654321',
         )
 
-        create_client(client)
+        create_client_service(client)
 
         client_up = Client(
             id = client.id,
@@ -37,7 +37,7 @@ def test_update_client(app):
             phone = '123456789',
         )
 
-        result = update_client(client_up)
+        result = update_client_service(client_up)
 
         client_test = db.session.query(Client).filter(Client.id == client_up.id).one()
 
@@ -57,9 +57,9 @@ def test_delete_client(app):
             phone='987654321',
         )
 
-        create_client(client)
+        create_client_service(client)
 
-        result = delete_client(client)
+        result = delete_client_service(client)
         assert result is True
 
         client_test = db.session.query(Client).filter(Client.id == client.id).scalar()
@@ -76,7 +76,7 @@ def test_client_name_none(app):
             phone='987654321',
         )
 
-        result = create_client(client)
+        result = create_client_service(client)
         assert result is False
 
 
@@ -88,7 +88,7 @@ def test_client_CPF_CNPJ_none(app):
             email='Test@gmail.com',
             phone='987654321',
         )
-        result = create_client(client)
+        result = create_client_service(client)
         assert result is False
 
 
@@ -100,7 +100,7 @@ def test_client_phone_none(app):
             email='Test@gmail.com',
             phone=None,
         )
-        result = create_client(client)
+        result = create_client_service(client)
         assert result is False
 
 
@@ -113,7 +113,7 @@ def test_client_email_none(app):
             phone='987654321',
         )
 
-        result = create_client(client)
+        result = create_client_service(client)
         assert result is True
 
 
@@ -126,7 +126,7 @@ def test_client_CPF_CNPJ_unique(app):
             phone='987654321',
         )
 
-        create_client(client_1)
+        create_client_service(client_1)
 
         client_2 = Client(
             name='Client test 2',
@@ -135,7 +135,7 @@ def test_client_CPF_CNPJ_unique(app):
             phone='98765432122',
         )
 
-        result = create_client(client_2)
+        result = create_client_service(client_2)
         assert result is False
 
 
@@ -148,7 +148,7 @@ def test_client_email_unique(app):
             phone='987654321',
         )
 
-        create_client(client_1)
+        create_client_service(client_1)
 
         client_2 = Client(
             name='Client test 2',
@@ -157,7 +157,7 @@ def test_client_email_unique(app):
             phone='98765432122',
         )
 
-        result = create_client(client_2)
+        result = create_client_service(client_2)
         assert result is False
 
 
@@ -170,7 +170,7 @@ def test_client_email_unique_none(app):
             phone='987654321',
         )
 
-        create_client(client_1)
+        create_client_service(client_1)
 
         client_2 = Client(
             name='Client test 2',
@@ -179,7 +179,7 @@ def test_client_email_unique_none(app):
             phone='98765432122',
         )
 
-        result = create_client(client_2)
+        result = create_client_service(client_2)
         assert result is True
 
 
@@ -192,7 +192,7 @@ def test_client_phone_unique(app):
             phone='987654321',
         )
 
-        create_client(client_1)
+        create_client_service(client_1)
 
         client_2 = Client(
             name='Client test 2',
@@ -201,7 +201,7 @@ def test_client_phone_unique(app):
             phone='98765432122',
         )
 
-        result = create_client(client_2)
+        result = create_client_service(client_2)
         assert result is False
     with app.test_request_context():
         client_1 = Client(
@@ -211,7 +211,7 @@ def test_client_phone_unique(app):
             phone='987654321',
         )
 
-        create_client(client_1)
+        create_client_service(client_1)
 
         client_2 = Client(
             name='Client test 2',
@@ -220,5 +220,5 @@ def test_client_phone_unique(app):
             phone='987654321',
         )
 
-        result = create_client(client_2)
+        result = create_client_service(client_2)
         assert result is False
