@@ -35,7 +35,7 @@ def _validate_driver(driver: Driver):
     return True
 
 
-def create_driver(driver: Driver):
+def create_driver_service(driver: Driver):
     if not _validate_driver(driver):
         return False
 
@@ -49,7 +49,7 @@ def create_driver(driver: Driver):
         flash('Error ao criar o Morotista', 'danger')
 
 
-def update_driver(driver: Driver):
+def update_driver_service(driver: Driver):
     data = db.session.query(Driver).filter(Driver.id == driver.id).one_or_none()
 
     if data is None:
@@ -77,7 +77,7 @@ def update_driver(driver: Driver):
         return False
 
 
-def delete_driver(driver: Driver):
+def delete_driver_service(driver: Driver):
     data = db.session.query(Driver).filter(Driver.id == driver.id).one_or_none()
     if data is None:
         flash('Motorista não encontrado', 'danger')

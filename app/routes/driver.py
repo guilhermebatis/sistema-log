@@ -1,11 +1,10 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from sqlalchemy.exc import IntegrityError
 
 from app.extensions import db
 from app.models.driver import Driver
 from app.models.driver import DriverStatus, DrivingLicenceCategory
 from datetime import date, datetime
-
+from service.driver_layer import create_driver_service, update_driver_service, delete_driver_service
 
 driver_bp = Blueprint('driver', __name__, url_prefix='/driver')
 
@@ -27,29 +26,6 @@ def driver_create():
         driver_license_expiration_date = request.form.get('license_expiration_date', '').strip()
         driver_status = request.form.get('status', '').strip()
 
-        # data validation
-        if not driver_name:
-            flash('Não foi possivel criar o motorista, falta a campo nome', 'danger')
-            return redirect(url_for('driver.driver_create'))
-        if not driver_cnh:
-            flash('Não foi possivel criar o motorista, falta a campo cnh', 'danger')
-            return redirect(url_for('driver.driver_create'))
-        if not driver_phone:
-            flash('Não foi possivel criar o motorista, falta a campo telefone', 'danger')
-            return redirect(url_for('driver.driver_create'))
-        if not driver_admission_date:
-            flash('Não foi possivel criar o motorista, falta a campo data de adimissão', 'danger')
-            return redirect(url_for('driver.driver_create'))
-        if not driver_licence_category:
-            flash('Não foi possivel criar o motorista, falta a campo categoria da cnh', 'danger')
-            return redirect(url_for('driver.driver_create'))
-        if not driver_license_expiration_date:
-            flash('Não foi possivel criar o motorista, falta a campo vencinto da cnh', 'danger')
-            return redirect(url_for('driver.driver_create'))
-        if not driver_status:
-            flash('Não foi possivel criar o motorista, falta a campo status', 'danger')
-            return redirect(url_for('driver.driver_create'))
-
         # data tranformation
         try:
             driver_licence_category = DrivingLicenceCategory(driver_licence_category)
@@ -59,7 +35,7 @@ def driver_create():
 
         except ValueError:
             flash('Não foi possivel criar o motorista', 'danger')
-            return redirect(url_for('driver.create'))
+            return redirect(url_for('driver.driver_create'))
 
         #Create drive in database
         new_driver = Driver(
@@ -72,13 +48,10 @@ def driver_create():
             status = driver_status,
         )
 
-        try:
-            db.session.add(new_driver)
-            db.session.commit()
+        if create_driver_service(new_driver):
             flash('Motorista cadastrado com sucesso', 'success')
             return redirect(url_for('driver.index'))
-        except IntegrityError:
-            db.session.rollback()
+        else:
             flash('Erro ao cadastrar o motorista', 'danger')
             return redirect(url_for('driver.index'))
 
@@ -113,28 +86,6 @@ def driver_update(id):
         driver_license_expiration_date = request.form.get('license_expiration_date', '').strip()
         driver_status = request.form.get('status', '').strip()
 
-        # data validation
-        if not driver_name:
-            flash('Não foi possivel criar o motorista, falta a campo nome', 'danger')
-            return redirect(url_for('driver.driver_update', id=id))
-        if not driver_cnh:
-            flash('Não foi possivel criar o motorista, falta a campo cnh', 'danger')
-            return redirect(url_for('driver.driver_update', id=id))
-        if not driver_phone:
-            flash('Não foi possivel criar o motorista, falta a campo telefone', 'danger')
-            return redirect(url_for('driver.driver_update', id=id))
-        if not driver_admission_date:
-            flash('Não foi possivel criar o motorista, falta a campo data de adimissão', 'danger')
-            return redirect(url_for('driver.driver_update', id=id))
-        if not driver_licence_category:
-            flash('Não foi possivel criar o motorista, falta a campo categoria da cnh', 'danger')
-            return redirect(url_for('driver.driver_update', id=id))
-        if not driver_license_expiration_date:
-            flash('Não foi possivel criar o motorista, falta a campo vencinto da cnh', 'danger')
-            return redirect(url_for('driver.driver_update', id=id))
-        if not driver_status:
-            flash('Não foi possivel criar o motorista, falta a campo status', 'danger')
-            return redirect(url_for('driver.driver_update', id=id))
 
         # data tranformation
         try:
@@ -146,40 +97,34 @@ def driver_update(id):
             flash('Não foi possivel criar o motorista', 'danger')
             return redirect(url_for('driver.driver_update', id=id))
 
-        try:
-            #Update Driver
-            data.name = driver_name
-            data.cnh = driver_cnh
-            data.phone = driver_phone
-            data.admission_date = driver_admission_date
-            data.licence_category = driver_licence_category
-            data.license_expiration_date = driver_license_expiration_date
-            data.status = driver_status
+        #Update Driver
+        data.name = driver_name
+        data.cnh = driver_cnh
+        data.phone = driver_phone
+        data.admission_date = driver_admission_date
+        data.licence_category = driver_licence_category
+        data.license_expiration_date = driver_license_expiration_date
+        data.status = driver_status
 
-            db.session.commit()
+        if update_driver_service(data):
             flash('Motorista atualizado com sucesso!', 'success')
             return redirect(url_for('driver.index'))
-        except:
+        else:
             flash('Não foi possivel atualizar o motorista', 'danger')
             return redirect(url_for('driver.driver_update', id=id))
 
 
 @driver_bp.route('/<int:id>/delete', methods=['POST'])
 def driver_delete(id):
-    try:
+    data = db.session.get(Driver, id)
 
-        data = db.session.get(Driver, id)
-
-        if not data:
-            flash('Não foi possivel editar o motorista', 'danger')
-            return redirect(url_for('driver.index'))
-
-        db.session.delete(data)
-        db.session.commit()
-        flash('Motorista deletado com sucesso!', 'success')
+    if not data:
+        flash('Não foi possivel editar o motorista', 'danger')
         return redirect(url_for('driver.index'))
 
-    except IntegrityError:
-        db.session.rollback()
+    if delete_driver_service(data):
+        flash('Motorista deletado com sucesso!', 'success')
+        return redirect(url_for('driver.index'))
+    else:
         flash('Não foi possivel deletar o motorista', 'danger')
         return redirect(url_for('driver.index'))

@@ -37,3 +37,8 @@ def delivery(app):
 @pytest.fixture
 def delivery_itens(app):
     return app.test_client()
+
+@pytest.fixture
+def driver(app):
+    return app.test_client()
+
