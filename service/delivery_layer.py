@@ -106,7 +106,7 @@ def _validate_delivery_item_relations_and_limits(delivery_item: DeliveryItem):
     return True
 
 
-def create_delivery_item(delivery_item: DeliveryItem):
+def create_delivery_item_service(delivery_item: DeliveryItem):
 
     if not _validate_delivery_item(delivery_item):
         return False
@@ -125,7 +125,7 @@ def create_delivery_item(delivery_item: DeliveryItem):
         return False
 
 
-def update_delivery_item(delivery_item: DeliveryItem):
+def update_delivery_item_service(delivery_item: DeliveryItem):
 
     data = db.session.get(DeliveryItem, delivery_item.id)
 
@@ -155,7 +155,7 @@ def update_delivery_item(delivery_item: DeliveryItem):
         return False
 
 
-def delete_delivery_item(delivery_item: DeliveryItem):
+def delete_delivery_item_service(delivery_item: DeliveryItem):
 
     data = db.session.get(DeliveryItem, delivery_item.id)
     if not data:
@@ -173,14 +173,14 @@ def delete_delivery_item(delivery_item: DeliveryItem):
         return False
 
 
-def _validade_delivery(delivery: Delivery):
+def _validade_delivery_service(delivery: Delivery):
 
     order_service_data = db.session.get(OrderService, delivery.order_service_id)
 
     if order_service_data is None:
         flash('Não foi possivel criar a entrega, precisa da ordem de serviço', 'danger')
         return False
-    if delivery.status is None:
+    if delivery.status is None or delivery.status == '':
         delivery.status = StatusDelivery.PENDING
     if not isinstance(delivery.status, StatusDelivery):
         flash('Não foi possivel criar a entrega, precisa do status da entrega', 'danger')
@@ -199,9 +199,9 @@ def _validade_delivery(delivery: Delivery):
     return True
 
 
-def create_delivery(delivery: Delivery):
+def create_delivery_service(delivery: Delivery):
 
-    if not _validade_delivery(delivery):
+    if not _validade_delivery_service(delivery):
         return False
 
     try:
@@ -215,14 +215,14 @@ def create_delivery(delivery: Delivery):
         return False
 
 
-def update_delivery(delivery: Delivery):
+def update_delivery_service(delivery: Delivery):
 
     data = db.session.get(Delivery, delivery.id)
     if not data:
         flash('Não foi possivel localizar a entrega', 'danger')
         return False
 
-    if not _validade_delivery(delivery):
+    if not _validade_delivery_service(delivery):
         return False
 
     data.order_service_id = delivery.order_service_id
@@ -239,7 +239,7 @@ def update_delivery(delivery: Delivery):
         return False
 
 
-def delete_delivery(delivery: Delivery):
+def delete_delivery_service(delivery: Delivery):
 
     data = db.session.get(Delivery, delivery.id)
 

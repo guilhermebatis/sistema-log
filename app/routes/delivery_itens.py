@@ -3,8 +3,8 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from app.extensions import db
 from app.models.delivery import Delivery, DeliveryItem
 from app.models.order_service import OrderItem
-from service.delivery_layer import create_delivery_item, update_delivery_item, delete_delivery_item
-
+from service.delivery_layer import create_delivery_item_service, update_delivery_item_service, delete_delivery_item_service
+from decimal import Decimal
 
 delivery_itens_bp = Blueprint('delivery_itens', __name__, url_prefix='/delivery_itens')
 
@@ -54,8 +54,8 @@ def create_delivery_itens():
         try:
             delivery_itens_order_item_id = int(delivery_itens_order_item_id)
             delivery_itens_delivery_id = int(delivery_itens_delivery_id)
-            delivery_itens_weight = float(delivery_itens_weight)
-            delivery_itens_cubage = float(delivery_itens_cubage)
+            delivery_itens_weight = Decimal(delivery_itens_weight)
+            delivery_itens_cubage = Decimal(delivery_itens_cubage)
             delivery_itens_quantity = int(delivery_itens_quantity)
         except ValueError:
             flash('Não foi possivel criar o item da entrega, somente numeros nos campos numericos', 'danger')
@@ -69,7 +69,7 @@ def create_delivery_itens():
             quantity = delivery_itens_quantity,
         )
 
-        if create_delivery_item(new_delivery_itens):
+        if create_delivery_item_service(new_delivery_itens):
             return redirect(url_for('delivery_itens.index'))
 
         return redirect(url_for('delivery_itens.create_delivery_itens'))
@@ -123,7 +123,7 @@ def update_delivery_itens(id):
             cubage = delivery_itens_cubage,
         )
 
-        if update_delivery_item(delivery_item):
+        if update_delivery_item_service(delivery_item):
             return redirect(url_for('delivery_itens.index'))
         else:
             return redirect(url_for('delivery_itens.update_delivery_itens', id=id))
@@ -132,7 +132,7 @@ def update_delivery_itens(id):
 @delivery_itens_bp.route('/<int:id>/delete', methods=['POST'])
 def delete_delivery_itens(id):
     delivery_item = db.session.get(DeliveryItem, id)
-    if delete_delivery_item(delivery_item):
+    if delete_delivery_item_service(delivery_item):
         return redirect(url_for('delivery_itens.index'))
     else:
         return redirect(url_for('delivery_itens.index', id=id))

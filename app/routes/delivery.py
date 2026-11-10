@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from app.extensions import db
 from app.models.delivery import Delivery, DeliveryItem, StatusDelivery
 from app.models.order_service import OrderItem
-from service.delivery_layer import create_delivery, update_delivery, delete_delivery
+from service.delivery_layer import create_delivery_service, update_delivery_service, delete_delivery_service
 
 
 delivery_bp = Blueprint('delivery', __name__, url_prefix='/delivery')
@@ -51,15 +51,6 @@ def create_delivery():
         delivery_driver_id = request.form.get('driver_id', '').strip()
         delivery_vehicle_id = request.form.get('vehicle_id', '').strip()
 
-        try:
-            delivery_order_service_id = int(delivery_order_service_id)
-            delivery_status = StatusDelivery(delivery_status)
-            delivery_driver_id = int(delivery_driver_id)
-            delivery_vehicle_id = int(delivery_vehicle_id)
-        except ValueError:
-            flash('Não foi possivel criar o item da entrega, somente numeros nos campos numericos', 'danger')
-            return redirect(url_for('delivery.create_delivery'))
-
         new_delivery = Delivery(
             order_service_id = delivery_order_service_id,
             status = delivery_status,
@@ -67,7 +58,7 @@ def create_delivery():
             vehicle_id = delivery_vehicle_id,
         )
 
-        if create_delivery(new_delivery):
+        if create_delivery_service(new_delivery):
             return redirect(url_for('delivery.index'))
         else:
             return redirect(url_for('delivery.create_delivery'))
@@ -97,15 +88,6 @@ def update_delivery(id):
         delivery_driver_id = request.form.get('driver_id', '').strip()
         delivery_vehicle_id = request.form.get('vehicle_id', '').strip()
 
-        try:
-            delivery_order_service_id = int(delivery_order_service_id)
-            delivery_status = StatusDelivery(delivery_status)
-            delivery_driver_id = int(delivery_driver_id)
-            delivery_vehicle_id = int(delivery_vehicle_id)
-        except ValueError:
-            flash('Não foi possivel criar o item da entrega, somente numeros nos campos numericos', 'danger')
-            return redirect(url_for('delivery_itens.update_delivery', id=id))
-
         var_update_delivery = Delivery(
             id = id,
             order_service_id = delivery_order_service_id,
@@ -114,7 +96,7 @@ def update_delivery(id):
             vehicle_id = delivery_vehicle_id,
         )
 
-        if update_delivery(var_update_delivery):
+        if update_delivery_service(var_update_delivery):
             return redirect(url_for('delivery.index'))
         else:
             return redirect(url_for('delivery.create_delivery'))
@@ -123,7 +105,7 @@ def update_delivery(id):
 @delivery_bp.route('/<int:id>/delete', methods=['POST'])
 def delete_delivery(id):
     data = db.session.get(Delivery, id)
-    if delete_delivery(data):
+    if delete_delivery_service(data):
         return redirect(url_for('delivery.index'))
     else:
         return redirect(url_for('delivery.index'))

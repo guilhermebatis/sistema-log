@@ -24,6 +24,16 @@ def app():
         db.session.remove()
         db.drop_all()
 
+
+
 @pytest.fixture
 def client(app):
+    return app.test_client()
+
+@pytest.fixture
+def delivery(app):
+    return app.test_client()
+
+@pytest.fixture
+def delivery_itens(app):
     return app.test_client()
