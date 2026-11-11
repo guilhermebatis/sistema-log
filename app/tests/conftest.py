@@ -42,3 +42,11 @@ def delivery_itens(app):
 def driver(app):
     return app.test_client()
 
+@pytest.fixture
+def order_service(app):
+    return app.test_client()
+
+@pytest.fixture
+def order_itens(app):
+    return app.test_client()
+

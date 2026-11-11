@@ -4,6 +4,8 @@ from app import db
 from app.models.order_service import OrderService, OrderStatus
 from app.models.client import Client
 from service.order_layer import create_order_service, update_order_service, delete_order_service
+from decimal import Decimal
+
 
 orders_bp = Blueprint('orders', __name__, url_prefix='/orders')
 
@@ -34,10 +36,10 @@ def create_order():
 
         try:
             order_client_id = int(order_client_id)
-            order_weight_total = float(order_weight_total)
-            order_cubage_total = float(order_cubage_total)
-            order_distance = float(order_distance)
-            order_price = float(order_price)
+            order_weight_total = Decimal(order_weight_total)
+            order_cubage_total = Decimal(order_cubage_total)
+            order_distance = Decimal(order_distance)
+            order_price = Decimal(order_price)
             order_status = OrderStatus(order_status)
         except ValueError:
             flash('Error ao criar a ordem de serviço', 'danger')
@@ -49,7 +51,7 @@ def create_order():
         cubage_total = order_cubage_total,
         origin = order_origin,
         destination = order_destination,
-        order_distance = order_distance,
+        distance = order_distance,
         price = order_price,
         status = order_status,
        )

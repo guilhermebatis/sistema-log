@@ -25,7 +25,7 @@ def _validade_order_item(order_item: OrderItem):
     return True
 
 
-def create_order_item(order_item: OrderItem):
+def create_order_item_service(order_item: OrderItem):
     if not _validade_order_item(order_item):
         return False
 
@@ -40,7 +40,7 @@ def create_order_item(order_item: OrderItem):
         return False
 
 
-def update_order_item(order_item: OrderItem):
+def update_order_item_service(order_item: OrderItem):
     if not _validade_order_item(order_item):
         return False
 
@@ -67,7 +67,7 @@ def update_order_item(order_item: OrderItem):
         return False
 
 
-def delete_order_item(order_item: OrderItem):
+def delete_order_item_service(order_item: OrderItem):
     data = db.session.get(OrderItem, order_item.id)
 
     try:
@@ -114,6 +114,7 @@ def create_order_service(order_service: OrderService):
         db.session.rollback()
         flash('Erro ao criar a ordem de serviço', 'danger')
         return False
+
 
 def update_order_service(order_service: OrderService):
 

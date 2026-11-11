@@ -2,9 +2,11 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 
 from app import db
 from app.models.order_service import OrderService, OrderItem
-from service.order_layer import create_order_item, update_order_item, delete_order_item
+from service.order_layer import create_order_item_service, update_order_item_service, delete_order_item_service
+
 
 order_items_bp  = Blueprint('order_items', __name__, url_prefix='/order_items')
+
 
 @order_items_bp.route("/")
 def index():
@@ -46,7 +48,7 @@ def create_order_item():
             price_item = order_item_price_item,
         )
 
-        if create_order_item(order_item):
+        if create_order_item_service(order_item):
             flash('Item criado com sucesso', 'success')
             return redirect(url_for('order_items.index'))
         else:
@@ -102,7 +104,6 @@ def update_order_item(order_item_id):
             flash('Não foi possivel atualizar o item da ordem', 'danger')
             return redirect(url_for('order_items.update_order_item', order_item_id=order_item_id))
 
-
         data.order_service_id = order_item_order_service_id
         data.quantity = order_item_quantity
         data.description = order_item_description
@@ -110,8 +111,7 @@ def update_order_item(order_item_id):
         data.cubage = order_item_cubage
         data.price_item = order_item_price_item
 
-
-        if update_order_item(data):
+        if update_order_item_service(data):
             flash('Item atualizado com sucesso', 'success')
             return redirect(url_for('order_items.index'))
         else:
@@ -123,7 +123,7 @@ def update_order_item(order_item_id):
 def delete_order_item(order_item_id):
     data = db.session.get(OrderItem, order_item_id)
 
-    if delete_order_item(data):
+    if delete_order_item_service(data):
         flash('Item deletado com sucesso', 'success')
         return redirect(url_for('order_items.index'))
     else:
