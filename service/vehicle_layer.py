@@ -56,7 +56,7 @@ def _validate_vehicle(vehicle: Vehicle):
     return True
 
 
-def create_vehicle(vehicle: Vehicle):
+def create_vehicle_service(vehicle: Vehicle):
     if not _validate_vehicle(vehicle):
         return False
 
@@ -71,7 +71,7 @@ def create_vehicle(vehicle: Vehicle):
         return False
 
 
-def update_vehicle(vehicle: Vehicle):
+def update_vehicle_service(vehicle: Vehicle):
     data = db.session.query(Vehicle).filter(Vehicle.id == vehicle.id).one_or_none()
 
     if data is None:
@@ -103,7 +103,7 @@ def update_vehicle(vehicle: Vehicle):
         return False
 
 
-def delete_vehicle(vehicle: Vehicle):
+def delete_vehicle_service(vehicle: Vehicle):
     data = db.session.query(Vehicle).filter(Vehicle.id == vehicle.id).one_or_none()
 
     if data is None:

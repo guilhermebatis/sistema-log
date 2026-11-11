@@ -50,3 +50,7 @@ def order_service(app):
 def order_itens(app):
     return app.test_client()
 
+@pytest.fixture
+def vehicle(app):
+    return app.test_client()
+
