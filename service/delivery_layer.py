@@ -182,9 +182,6 @@ def _validade_delivery_service(delivery: Delivery):
         return False
     if delivery.status is None or delivery.status == '':
         delivery.status = StatusDelivery.PENDING
-    if not isinstance(delivery.status, StatusDelivery):
-        flash('Não foi possivel criar a entrega, precisa do status da entrega', 'danger')
-        return False
     if delivery.driver_id is not None:
         driver = db.session.get(Driver, delivery.driver_id)
         if not driver:

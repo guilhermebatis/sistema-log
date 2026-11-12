@@ -106,8 +106,8 @@ def update_delivery_itens(id):
         try:
             delivery_itens_order_item_id = int(delivery_itens_order_item_id)
             delivery_itens_delivery_id = int(delivery_itens_delivery_id)
-            delivery_itens_weight = float(delivery_itens_weight)
-            delivery_itens_cubage = float(delivery_itens_cubage)
+            delivery_itens_weight = Decimal(delivery_itens_weight)
+            delivery_itens_cubage = Decimal(delivery_itens_cubage)
             delivery_itens_quantity = int(delivery_itens_quantity)
 
         except ValueError:

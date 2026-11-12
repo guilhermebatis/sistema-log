@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 
 from app.extensions import db
+from app.models import OrderService, Driver, Vehicle
 from app.models.delivery import Delivery, DeliveryItem, StatusDelivery
 from app.models.order_service import OrderItem
 from service.delivery_layer import create_delivery_service, update_delivery_service, delete_delivery_service
@@ -21,33 +22,35 @@ def index():
 
 @delivery_bp.route('<int:id>/info', methods=['GET'])
 def info(id):
-    delivery_itens_data = db.session.get(DeliveryItem, id)
+    delivery_data = db.session.get(Delivery, id)
 
-    if not delivery_itens_data:
-        flash('Não foi possivel localizar o item da entrega')
+    if not delivery_data:
+        flash('Não foi possivel localizar a entrega')
         return redirect(url_for('delivery.index'))
 
-    delivery_data = delivery_itens_data.delivery
 
     return render_template('delivery/info.html',
-                           delivery=delivery_data,
-                           delivery_itens=delivery_itens_data)
+                           deliveries=delivery_data,)
 
 
 @delivery_bp.route('/create', methods=['GET', 'POST'])
 def create_delivery():
     if request.method == 'GET':
-        deliveries_data  = db.session.query(Delivery).all()
+        order_service_data  = db.session.query(OrderService).all()
         order_items_data  = db.session.query(OrderItem).all()
+        drivers_data = db.session.query(Driver).all()
+        vehicle_data = db.session.query(Vehicle).all()
 
         return render_template('delivery/create.html',
-                               deliveries=deliveries_data,
-                               order_items=order_items_data,)
+                               order_services=order_service_data,
+                               order_items=order_items_data,
+                               drivers=drivers_data,
+                               vehicles=vehicle_data)
 
     if request.method == 'POST':
 
         delivery_order_service_id = request.form.get('order_service_id', '').strip()
-        delivery_status = request.form.get('status', '').strip()
+        delivery_status = request.form.get('status', StatusDelivery.PENDING)
         delivery_driver_id = request.form.get('driver_id', '').strip()
         delivery_vehicle_id = request.form.get('vehicle_id', '').strip()
 
@@ -67,18 +70,21 @@ def create_delivery():
 @delivery_bp.route('<int:id>/update', methods=['GET', 'POST'])
 def update_delivery(id):
     if request.method == 'GET':
-        delivery_itens_data = db.session.get(DeliveryItem, id)
-        if not delivery_itens_data:
-            flash('Não foi possivel localizar o item', 'danger')
+        delivery_data = db.session.get(Delivery, id)
+        if not delivery_data:
+            flash('Não foi possivel localizar a entrega', 'danger')
             return redirect(url_for('delivery.index'))
-        order_items_data = db.session.query(OrderItem).all()
-        deliveries_data = db.session.query(Delivery).all()
+
+        order_service_data  = db.session.query(OrderService).all()
+        drivers_data = db.session.query(Driver).all()
+        vehicle_data = db.session.query(Vehicle).all()
 
         return render_template(
             'delivery/update.html',
-            delivery_item=delivery_itens_data,
-            order_items=order_items_data,
-            deliveries=deliveries_data,
+            order_services=order_service_data,
+            drivers=drivers_data,
+            vehicles=vehicle_data,
+            deliveries=delivery_data,
         )
 
     if request.method == 'POST':
