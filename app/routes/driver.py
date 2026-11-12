@@ -49,10 +49,8 @@ def driver_create():
         )
 
         if create_driver_service(new_driver):
-            flash('Motorista cadastrado com sucesso', 'success')
             return redirect(url_for('driver.index'))
         else:
-            flash('Erro ao cadastrar o motorista', 'danger')
             return redirect(url_for('driver.index'))
 
     return render_template("driver/create.html")
@@ -107,10 +105,8 @@ def driver_update(id):
         data.status = driver_status
 
         if update_driver_service(data):
-            flash('Motorista atualizado com sucesso!', 'success')
             return redirect(url_for('driver.index'))
         else:
-            flash('Não foi possivel atualizar o motorista', 'danger')
             return redirect(url_for('driver.driver_update', id=id))
 
 
@@ -123,8 +119,6 @@ def driver_delete(id):
         return redirect(url_for('driver.index'))
 
     if delete_driver_service(data):
-        flash('Motorista deletado com sucesso!', 'success')
         return redirect(url_for('driver.index'))
     else:
-        flash('Não foi possivel deletar o motorista', 'danger')
         return redirect(url_for('driver.index'))

@@ -54,10 +54,8 @@ def create_vehicle():
         )
 
         if create_vehicle_service(new_vehicle):
-            flash('Veiculo cadastrado com sucesso')
             return redirect(url_for('vehicle.index'))
         else:
-            flash('Error ao cadastrar o veiculo', 'danger')
             return redirect(url_for('vehicle.create_vehicle'))
 
     return render_template('vehicle/create.html')
@@ -69,14 +67,11 @@ def delete_vehicle(id):
     data = db.session.get(Vehicle, id)
 
     if not data:
-        flash('veiculo não encontrado', 'danger')
         return redirect(url_for('vehicle.index'))
 
     if delete_vehicle_service(data):
-        flash('Veiculo deletado com sucesso', 'success')
         return redirect(url_for('vehicle.index'))
     else:
-        flash('Error ao deletar o veiculo', 'danger')
         return redirect(url_for('vehicle.index'))
 
 
@@ -130,8 +125,6 @@ def update_vehicle(id):
         data.model = vehicle_model
 
         if update_vehicle_service(data):
-            flash('Veiculo atualizado com sucesso!', 'success')
             return redirect(url_for('vehicle.index'))
         else:
-            flash('Error ao atualizar o veiculo', 'danger')
             return redirect(url_for('vehicle.update_vehicle', id=id))

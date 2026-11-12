@@ -22,9 +22,10 @@ def create_client():
         )
 
         if create_client_service(new_client):
-            return redirect(url_for('client.create_client'))
+            return redirect(url_for('client.client'))
         else:
             return render_template('clients/create.html')
+    return render_template('clients/create.html')
 
 
 @client_bp.route('/', methods=['GET'])

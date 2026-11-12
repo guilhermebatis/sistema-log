@@ -49,10 +49,8 @@ def create_order_item():
         )
 
         if create_order_item_service(order_item):
-            flash('Item criado com sucesso', 'success')
             return redirect(url_for('order_items.index'))
         else:
-            flash('Error ao criar o item', 'danger')
             return redirect(url_for('order_items.create_order_item'))
 
 
@@ -112,10 +110,8 @@ def update_order_item(order_item_id):
         data.price_item = order_item_price_item
 
         if update_order_item_service(data):
-            flash('Item atualizado com sucesso', 'success')
             return redirect(url_for('order_items.index'))
         else:
-            flash('Error ao atualizar o item da ordem', 'danger')
             return redirect(url_for('order_items.update_order_item', order_item_id=order_item_id))
 
 
@@ -124,8 +120,6 @@ def delete_order_item(order_item_id):
     data = db.session.get(OrderItem, order_item_id)
 
     if delete_order_item_service(data):
-        flash('Item deletado com sucesso', 'success')
         return redirect(url_for('order_items.index'))
     else:
-        flash('Error ao deletar o item da ordem', 'danger')
         return redirect(url_for('order_items.index'))
