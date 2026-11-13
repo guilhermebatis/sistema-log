@@ -3,6 +3,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from app import db
 from app.models.order_service import OrderService, OrderItem
 from service.order_layer import create_order_item_service, update_order_item_service, delete_order_item_service
+from decimal import Decimal
 
 
 order_items_bp  = Blueprint('order_items', __name__, url_prefix='/order_items')
@@ -32,9 +33,9 @@ def create_order_item():
         try:
             order_item_order_service_id = int(order_item_order_service_id)
             order_item_quantity = int(order_item_quantity)
-            order_item_weight = float(order_item_weight)
-            order_item_cubage = float(order_item_cubage)
-            order_item_price_item = float(order_item_price_item)
+            order_item_weight = Decimal(order_item_weight)
+            order_item_cubage = Decimal(order_item_cubage)
+            order_item_price_item = Decimal(order_item_price_item)
         except ValueError:
             flash('')
             return redirect(url_for('order_items.create_order_item'))
@@ -95,9 +96,9 @@ def update_order_item(order_item_id):
         try:
             order_item_order_service_id = int(order_item_order_service_id)
             order_item_quantity = int(order_item_quantity)
-            order_item_weight = float(order_item_weight)
-            order_item_cubage = float(order_item_cubage)
-            order_item_price_item = float(order_item_price_item)
+            order_item_weight = Decimal(order_item_weight)
+            order_item_cubage = Decimal(order_item_cubage)
+            order_item_price_item = Decimal(order_item_price_item)
         except ValueError:
             flash('Não foi possivel atualizar o item da ordem', 'danger')
             return redirect(url_for('order_items.update_order_item', order_item_id=order_item_id))

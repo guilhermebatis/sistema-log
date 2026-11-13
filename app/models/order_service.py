@@ -1,7 +1,8 @@
 from app.extensions import db
 from enum import Enum
 from sqlalchemy import CheckConstraint
-
+from datetime import datetime
+from decimal import Decimal
 
 class OrderStatus(Enum):
     PENDING = "PENDING"
@@ -26,12 +27,13 @@ class OrderService(db.Model):
     client_id = db.Column(db.Integer,
                           db.ForeignKey("client.id"),
                           )
-    weight_total = db.Column(db.Numeric(10, 2))
-    cubage_total = db.Column(db.Numeric(10, 2))
+    created_at = db.Column(db.DateTime, default=datetime.now)
+    weight_total = db.Column(db.Numeric(10, 2), default=Decimal('0.00'))
+    cubage_total = db.Column(db.Numeric(10, 2), default=Decimal('0.00'))
     origin = db.Column(db.String(20), nullable=False)
     destination = db.Column(db.String(20), nullable=False)
     distance = db.Column(db.Numeric(10, 2),  nullable=False)
-    price = db.Column(db.Numeric(10, 2))
+    price = db.Column(db.Numeric(10, 2), default=Decimal('0.00'))
     status = db.Column(db.Enum(OrderStatus, name="order_status"),
                        nullable=False,
                        default=OrderStatus.PENDING)
@@ -39,6 +41,20 @@ class OrderService(db.Model):
     client = db.relationship("Client", back_populates="orders_service")
     order_items = db.relationship("OrderItem", back_populates="order")
     deliveries = db.relationship("Delivery", back_populates="order_service")
+
+
+    def calculate_totals(self):
+        weight_total = Decimal('0.00')
+        cubage_total = Decimal('0.00')
+        price = Decimal('0.00')
+        for itens in self.order_items:
+            weight_total += itens.quantity * itens.weight
+            cubage_total += itens.quantity * itens.cubage
+            price += itens.quantity * itens.price_item
+
+        self.weight_total = weight_total
+        self.cubage_total = cubage_total
+        self.price = price
 
 
 class OrderItem(db.Model):

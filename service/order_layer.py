@@ -31,6 +31,8 @@ def create_order_item_service(order_item: OrderItem):
 
     try:
         db.session.add(order_item)
+        order = db.session.get(OrderService, order_item.order_service_id)
+        order.calculate_totals()
         db.session.commit()
         flash('O item foi criado com sucesso', 'success')
         return True
@@ -58,6 +60,8 @@ def update_order_item_service(order_item: OrderItem):
 
     try:
         db.session.add(data)
+        order = db.session.get(OrderService, order_item.order_service_id)
+        order.calculate_totals()
         db.session.commit()
         flash('Item atualizado com sucesso', 'success')
         return True
@@ -70,31 +74,30 @@ def update_order_item_service(order_item: OrderItem):
 def delete_order_item_service(order_item: OrderItem):
     data = db.session.get(OrderItem, order_item.id)
 
+    delivery_items = OrderItem.query.get(data.id).delivery_items
+
+    print(f"Delivery items relacionados: {delivery_items}")
+
     try:
+        order = db.session.get(OrderService, order_item.order_service_id)
         db.session.delete(data)
+        order.calculate_totals()
         db.session.commit()
         flash('Item deletado com sucesso', 'success')
         return True
-    except IntegrityError:
+    except IntegrityError as e:
+        db.session.rollback()
+        print(f"Erro ao deletar item: {e.orig}")
         flash('Erro ao deletar o item', 'danger')
         return False
 
 
 def _validate_order_service(order_service: OrderService):
-    if order_service.weight_total < 0:
-        flash('O peso total deve ser positivo', 'danger')
-        return False
-    if order_service.cubage_total < 0:
-        flash('O cubagem total deve ser positivo', 'danger')
-        return False
     if not order_service.origin or not order_service.destination:
         flash('O campo origem e destino precisam ser preencidos', 'danger')
         return False
     if not order_service.distance or order_service.distance < 0:
         flash('A distançia precisa ser positiva', 'danger')
-        return False
-    if order_service.price < 0:
-        flash('O preço precisa ser positivo', 'danger')
         return False
     if not order_service.status:
         order_service.status = OrderStatus.PENDING
@@ -165,6 +168,3 @@ def delete_order_service(order_service: OrderService):
         db.session.rollback()
         flash('Error ao deletar a ordem de serviço', 'danger')
         return False
-
-
-

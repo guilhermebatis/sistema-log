@@ -8,6 +8,10 @@ Create Date: 2026-11-04 21:25:12.539921
 from alembic import op
 import sqlalchemy as sa
 
+revision = 'e99918d7561a'
+down_revision = 'e240484b932e'
+branch_labels = None
+depends_on = None
 
 def upgrade():
     with op.batch_alter_table('client', schema=None) as batch_op:

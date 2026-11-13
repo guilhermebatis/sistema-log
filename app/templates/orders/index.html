@@ -70,6 +70,13 @@
                     <td class="actions">
 
                         <a
+                            href="{{ url_for('order_items.create_order_item', order_item_id=order.id) }}"
+                            class="action-btn edit-btn"
+                        >
+                            Adicionar itens
+                        </a>
+
+                        <a
                             href="{{ url_for('orders.update_order', order_id=order.id) }}"
                             class="action-btn edit-btn"
                         >
