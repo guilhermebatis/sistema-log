@@ -1,0 +1,270 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="top-bar">
+        <h1>Ordem de Serviço #{{ order_data.id }}</h1>
+
+        <div class="actions">
+
+            <a
+                href="{{ url_for('orders.update_order', order_id=order_data.id) }}"
+                class="btn"
+            >
+                Editar
+            </a>
+
+            <a
+                href="{{ url_for('orders.index') }}"
+                class="btn cancel-btn"
+            >
+                Voltar
+            </a>
+
+        </div>
+    </div>
+
+
+    <!-- INFORMAÇÕES DA ORDEM -->
+
+    <div class="info-card">
+
+        <h2>Informações da Ordem</h2>
+
+        <div class="info-grid">
+
+            <div class="info-item">
+                <span class="info-label">ID</span>
+                <strong>#{{ order_data.id }}</strong>
+            </div>
+
+            <div class="info-item">
+                <span class="info-label">Status</span>
+                <strong>{{ order_data.status.value }}</strong>
+            </div>
+
+            <div class="info-item">
+                <span class="info-label">Cliente</span>
+                <strong>
+                    {% if order_data.client %}
+                        {{ order_data.client.name }}
+                    {% else %}
+                        Não informado
+                    {% endif %}
+                </strong>
+            </div>
+
+            <div class="info-item">
+                <span class="info-label">Data de criação</span>
+                <strong>
+                    {% if order_data.created_at %}
+                        {{ order_data.created_at.strftime('%d/%m/%Y %H:%M') }}
+                    {% else %}
+                        Não informada
+                    {% endif %}
+                </strong>
+            </div>
+
+            <div class="info-item">
+                <span class="info-label">Origem</span>
+                <strong>{{ order_data.origin }}</strong>
+            </div>
+
+            <div class="info-item">
+                <span class="info-label">Destino</span>
+                <strong>{{ order_data.destination }}</strong>
+            </div>
+
+            <div class="info-item">
+                <span class="info-label">Distância</span>
+                <strong>{{ order_data.distance }} km</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- RESUMO DA ORDEM -->
+
+    <div class="info-card">
+
+        <h2>Resumo da Ordem</h2>
+
+        <div class="info-grid">
+
+            <div class="info-item">
+                <span class="info-label">Peso total</span>
+                <strong>{{ order_data.weight_total or 0 }} kg</strong>
+            </div>
+
+            <div class="info-item">
+                <span class="info-label">Cubagem total</span>
+                <strong>{{ order_data.cubage_total or 0 }} m³</strong>
+            </div>
+
+            <div class="info-item">
+                <span class="info-label">Preço total</span>
+                <strong>
+                    {% if order_data.price is not none %}
+                        R$ {{ "%.2f"|format(order_data.price) }}
+                    {% else %}
+                        R$ 0,00
+                    {% endif %}
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ITENS DA ORDEM -->
+
+    <div class="info-card">
+
+        <h2>Itens da Ordem</h2>
+
+        {% if order_items_data %}
+
+            <div class="table-container">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Descrição</th>
+                            <th>Quantidade</th>
+                            <th>Peso unitário</th>
+                            <th>Cubagem unitária</th>
+                            <th>Preço unitário</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for item in order_items_data %}
+
+                        <tr>
+                            <td>#{{ item.id }}</td>
+                            <td>{{ item.description or 'Não informado' }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>{{ item.weight }} kg</td>
+                            <td>{{ item.cubage }} m³</td>
+                            <td>R$ {{ "%.2f"|format(item.price_item) }}</td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+
+            </div>
+
+        {% else %}
+
+            <p class="empty">
+                Nenhum item cadastrado nesta ordem.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- ENTREGAS DA ORDEM -->
+
+    <div class="info-card">
+
+        <h2>Entregas Relacionadas</h2>
+
+        {% if delivery_data %}
+
+            {% for delivery in delivery_data %}
+
+                <div class="info-card">
+
+                    <div class="top-bar">
+                        <h3>Entrega #{{ delivery.id }}</h3>
+
+                        <a
+                            href="{{ url_for('delivery.delivery_info', id=delivery.id) }}"
+                            class="action-btn edit-btn"
+                        >
+                            Ver entrega
+                        </a>
+                    </div>
+
+                    <div class="info-grid">
+
+                        <div class="info-item">
+                            <span class="info-label">Status</span>
+                            <strong>{{ delivery.status.value }}</strong>
+                        </div>
+
+                    </div>
+
+                    {% if delivery.delivery_items %}
+
+                        <div class="table-container">
+
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Item da ordem</th>
+                                        <th>Quantidade alocada</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+
+                                    {% for delivery_item in delivery.delivery_items %}
+
+                                    <tr>
+                                        <td>
+                                            {% if delivery_item.order_item %}
+                                                {{ delivery_item.order_item.description or
+                                                   'Item #' ~ delivery_item.order_item.id }}
+                                            {% else %}
+                                                Item não identificado
+                                            {% endif %}
+                                        </td>
+
+                                        <td>{{ delivery_item.quantity }}</td>
+                                    </tr>
+
+                                    {% endfor %}
+
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                    {% else %}
+
+                        <p class="empty">
+                            Nenhum item alocado nesta entrega.
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p class="empty">
+                Nenhuma entrega vinculada a esta ordem.
+            </p>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

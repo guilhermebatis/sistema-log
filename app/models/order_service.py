@@ -27,7 +27,7 @@ class OrderService(db.Model):
     client_id = db.Column(db.Integer,
                           db.ForeignKey("client.id"),
                           )
-    created_at = db.Column(db.DateTime, default=datetime.now)
+    created_at = db.Column(db.DateTime, default=datetime.now())
     weight_total = db.Column(db.Numeric(10, 2), default=Decimal('0.00'))
     cubage_total = db.Column(db.Numeric(10, 2), default=Decimal('0.00'))
     origin = db.Column(db.String(20), nullable=False)

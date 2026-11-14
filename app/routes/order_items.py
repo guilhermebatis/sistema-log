@@ -19,7 +19,11 @@ def index():
 def create_order_item():
     if request.method == 'GET':
         order_services = db.session.query(OrderService).all()
-        return render_template('order_item/create.html', order_services=order_services)
+        selected_order_id = request.args.get('order_service_id', type=int)
+        return render_template('order_item/create.html',
+                               order_services=order_services,
+                               selected_order_id=selected_order_id
+                               )
 
     if request.method == 'POST':
 

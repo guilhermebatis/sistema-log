@@ -21,8 +21,11 @@
                 <option value="">Selecione uma ordem de serviço</option>
 
                 {% for order in order_services %}
-                    <option value="{{ order.id }}">
-                        #{{ order.id }} - {{ order.origin }} → {{ order.destination }}
+                    <option
+                        value="{{ order.id }}"
+                        {% if order.id == selected_order_id %}selected{% endif %}
+                    >
+                        Ordem {{ order.id }}
                     </option>
                 {% endfor %}
 
@@ -113,7 +116,7 @@
 
 
         <a
-            href="{{ url_for('driver.index') }}"
+            href="{{ url_for('order_items.index') }}"
             class="cancel"
         >
             Cancelar

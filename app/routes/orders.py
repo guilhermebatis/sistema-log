@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 
 from app import db
-from app.models.order_service import OrderService, OrderStatus
+from app.models import Delivery
+from app.models.order_service import OrderService, OrderStatus, OrderItem
 from app.models.client import Client
 from service.order_layer import create_order_service, update_order_service, delete_order_service
 from decimal import Decimal
@@ -14,6 +15,23 @@ orders_bp = Blueprint('orders', __name__, url_prefix='/orders')
 def index():
     data = db.session.query(OrderService).all()
     return render_template('orders/index.html', data=data)
+
+
+@orders_bp.route('/<int:order_id>/info', methods=['GET'])
+def order_info(order_id):
+
+    order_data = db.session.get(OrderService, order_id)
+    if not order_data:
+        flash('Não foi possivel localizar a ordem', 'danger')
+        return redirect(url_for('orders.index'))
+
+    delivery_data = order_data.deliveries
+    order_items_data = order_data.order_items
+
+    return render_template('orders/info.html',
+                           order_data=order_data,
+                           delivery_data=delivery_data,
+                           order_items_data=order_items_data,)
 
 
 @orders_bp.route('/create', methods=['GET', 'POST'])

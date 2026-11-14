@@ -70,7 +70,14 @@
                     <td class="actions">
 
                         <a
-                            href="{{ url_for('order_items.create_order_item', order_item_id=order.id) }}"
+                            href="{{ url_for('orders.order_info', order_id=order.id) }}"
+                            class="action-btn edit-btn"
+                        >
+                            detalhes
+                        </a>
+
+                        <a
+                            href="{{ url_for('order_items.create_order_item', order_service_id=order.id) }}"
                             class="action-btn edit-btn"
                         >
                             Adicionar itens
