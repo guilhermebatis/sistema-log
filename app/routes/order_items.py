@@ -54,7 +54,7 @@ def create_order_item():
         )
 
         if create_order_item_service(order_item):
-            return redirect(url_for('order_items.index'))
+            return redirect(url_for('orders.order_info', order_id=order_item_order_service_id))
         else:
             return redirect(url_for('order_items.create_order_item'))
 
@@ -115,7 +115,7 @@ def update_order_item(order_item_id):
         data.price_item = order_item_price_item
 
         if update_order_item_service(data):
-            return redirect(url_for('order_items.index'))
+            return redirect(url_for('orders.order_info', order_id=order_item_order_service_id))
         else:
             return redirect(url_for('order_items.update_order_item', order_item_id=order_item_id))
 

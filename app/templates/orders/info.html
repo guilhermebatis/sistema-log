@@ -126,7 +126,16 @@
 
     <div class="info-card">
 
-        <h2>Itens da Ordem</h2>
+        <div class="top-bar">
+            <h2>Itens da Ordem</h2>
+
+            <a
+                href="{{ url_for('order_items.create_order_item', order_service_id=order_data.id) }}"
+                class="btn"
+            >
+                + Adicionar item
+            </a>
+        </div>
 
         {% if order_items_data %}
 
@@ -141,6 +150,7 @@
                             <th>Peso unitário</th>
                             <th>Cubagem unitária</th>
                             <th>Preço unitário</th>
+                            <th>Ações</th>
                         </tr>
                     </thead>
 
@@ -155,6 +165,32 @@
                             <td>{{ item.weight }} kg</td>
                             <td>{{ item.cubage }} m³</td>
                             <td>R$ {{ "%.2f"|format(item.price_item) }}</td>
+
+                            <td>
+                                <div class="actions">
+
+                                    <a
+                                        href="{{ url_for('order_items.update_order_item', order_item_id=item.id) }}"
+                                        class="btn"
+                                    >
+                                        Editar
+                                    </a>
+
+                                    <form
+                                        method="POST"
+                                        action="{{ url_for('order_items.delete_order_item', order_item_id=item.id) }}"
+                                        onsubmit="return confirm('Deseja realmente excluir este item?')"
+                                    >
+                                    <button
+                                        type="submit"
+                                        class="action-btn delete-btn"
+                                    >
+                                        Excluir
+                                    </button>
+                                    </form>
+
+                                </div>
+                            </td>
                         </tr>
 
                         {% endfor %}
@@ -191,7 +227,7 @@
                         <h3>Entrega #{{ delivery.id }}</h3>
 
                         <a
-                            href="{{ url_for('delivery.delivery_info', id=delivery.id) }}"
+                            href="{{ url_for('delivery.info', id=delivery.id) }}"
                             class="action-btn edit-btn"
                         >
                             Ver entrega
