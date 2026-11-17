@@ -6,6 +6,8 @@ from app.models import DeliveryItem, Delivery, OrderService, Driver, Vehicle
 from app.models import OrderItem
 from sqlalchemy import func, select
 from app.extensions import db
+from app.models.driver import DriverStatus
+from app.models.vehicle import VehicleStatus
 
 
 def _calculate_delivery_item_totals(delivery_item: DeliveryItem):
@@ -210,15 +212,35 @@ def _validade_delivery_service(delivery: Delivery):
         return False
     if delivery.status is None or delivery.status == '':
         delivery.status = StatusDelivery.PENDING
+
+    # MOTORISTA
     if delivery.driver_id is not None:
+
         driver = db.session.get(Driver, delivery.driver_id)
+
         if not driver:
             flash('Não foi possivel localizar o motorista')
             return False
+        if driver.status == DriverStatus.UNAVAILABLE:
+            flash('O motorista não esta disponivel', 'danger')
+            return False
+        if driver.status == DriverStatus.IN_ROUTE:
+            flash('O motorista esta em rota de entrega', 'danger')
+            return False
+
+    #VEICULO
     if delivery.vehicle_id is not None:
+
         vehicle = db.session.get(Vehicle, delivery.vehicle_id)
+
         if not vehicle:
             flash('Não foi possivel localizar o veiculo')
+            return False
+        if vehicle.status == VehicleStatus.UNAVAILABLE:
+            flash('O veiculo não esta disponivel', 'danger')
+            return False
+        if vehicle.status == VehicleStatus.MAINTENANCE:
+            flash('O veiculo esta em manutenção', 'danger')
             return False
 
     return True
