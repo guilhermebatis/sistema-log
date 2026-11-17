@@ -40,22 +40,22 @@ def create_delivery_itens():
         deliveries_data  = db.session.query(Delivery).all()
         order_items_data  = db.session.query(OrderItem).all()
 
+        selected_delivery_id = request.args.get('delivery_id', type=int)
+
         return render_template('delivery_itens/create.html',
                                deliveries=deliveries_data,
-                               order_items=order_items_data,)
+                               order_items=order_items_data,
+                               selected_delivery_id=selected_delivery_id
+                               )
 
     if request.method == 'POST':
         delivery_itens_order_item_id = request.form.get('order_item_id', '').strip()
         delivery_itens_delivery_id = request.form.get('delivery_id', '').strip()
-        delivery_itens_weight = request.form.get('weight', '').strip()
-        delivery_itens_cubage = request.form.get('cubage', '').strip()
         delivery_itens_quantity = request.form.get('quantity', '').strip()
 
         try:
             delivery_itens_order_item_id = int(delivery_itens_order_item_id)
             delivery_itens_delivery_id = int(delivery_itens_delivery_id)
-            delivery_itens_weight = Decimal(delivery_itens_weight)
-            delivery_itens_cubage = Decimal(delivery_itens_cubage)
             delivery_itens_quantity = int(delivery_itens_quantity)
         except ValueError:
             flash('Não foi possivel criar o item da entrega, somente numeros nos campos numericos', 'danger')
@@ -64,13 +64,11 @@ def create_delivery_itens():
         new_delivery_itens = DeliveryItem(
             order_item_id = delivery_itens_order_item_id,
             delivery_id = delivery_itens_delivery_id,
-            weight = delivery_itens_weight,
-            cubage = delivery_itens_cubage,
             quantity = delivery_itens_quantity,
         )
 
         if create_delivery_item_service(new_delivery_itens):
-            return redirect(url_for('delivery_itens.index'))
+            return redirect(url_for('delivery.info', id=delivery_itens_delivery_id))
 
         return redirect(url_for('delivery_itens.create_delivery_itens'))
 
@@ -99,15 +97,11 @@ def update_delivery_itens(id):
 
         delivery_itens_order_item_id = request.form.get('order_item_id', '').strip()
         delivery_itens_delivery_id = request.form.get('delivery_id', '').strip()
-        delivery_itens_weight = request.form.get('weight', '').strip()
-        delivery_itens_cubage = request.form.get('cubage', '').strip()
         delivery_itens_quantity = request.form.get('quantity', '').strip()
 
         try:
             delivery_itens_order_item_id = int(delivery_itens_order_item_id)
             delivery_itens_delivery_id = int(delivery_itens_delivery_id)
-            delivery_itens_weight = Decimal(delivery_itens_weight)
-            delivery_itens_cubage = Decimal(delivery_itens_cubage)
             delivery_itens_quantity = int(delivery_itens_quantity)
 
         except ValueError:
@@ -118,13 +112,11 @@ def update_delivery_itens(id):
             id = id,
             order_item_id = delivery_itens_order_item_id,
             delivery_id = delivery_itens_delivery_id,
-            weight = delivery_itens_weight,
             quantity = delivery_itens_quantity,
-            cubage = delivery_itens_cubage,
         )
 
         if update_delivery_item_service(delivery_item):
-            return redirect(url_for('delivery_itens.index'))
+            return redirect(url_for('delivery.info', id=delivery_itens_delivery_id))
         else:
             return redirect(url_for('delivery_itens.update_delivery_itens', id=id))
 

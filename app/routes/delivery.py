@@ -30,7 +30,8 @@ def info(id):
 
 
     return render_template('delivery/info.html',
-                           deliveries=delivery_data,)
+                           deliveries=delivery_data,
+                           )
 
 
 @delivery_bp.route('/create', methods=['GET', 'POST'])

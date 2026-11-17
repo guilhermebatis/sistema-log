@@ -60,7 +60,10 @@
 
                 {% for delivery in deliveries %}
 
-                    <option value="{{ delivery.id }}">
+                       <option
+                            value="{{ delivery.id }}"
+                            {% if delivery.id == selected_delivery_id %}selected{% endif %}
+                        >
 
                         #{{ delivery.id }}
 
@@ -76,42 +79,6 @@
                 {% endfor %}
 
             </select>
-
-        </div>
-
-
-        <div class="field">
-
-            <label for="weight">
-                Peso
-            </label>
-
-            <input
-                type="number"
-                name="weight"
-                id="weight"
-                step="0.01"
-                min="0"
-                placeholder="Ex: 150.50"
-            >
-
-        </div>
-
-
-        <div class="field">
-
-            <label for="cubage">
-                Cubagem
-            </label>
-
-            <input
-                type="number"
-                name="cubage"
-                id="cubage"
-                step="0.01"
-                min="0"
-                placeholder="Ex: 2.50"
-            >
 
         </div>
 

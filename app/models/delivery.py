@@ -1,6 +1,7 @@
 from app.extensions import db
 from enum import Enum
 from sqlalchemy import CheckConstraint
+from decimal import Decimal
 
 
 class StatusDelivery(Enum):
@@ -49,9 +50,14 @@ class DeliveryItem(db.Model):
     delivery_id = db.Column(db.Integer,
                             db.ForeignKey("delivery.id", ondelete="CASCADE"),
                             nullable=False,)
-    weight = db.Column(db.Numeric(10, 2), nullable=False)
-    cubage = db.Column(db.Numeric(10, 2), nullable=False)
+    weight = db.Column(db.Numeric(10, 2), nullable=False,)
+    cubage = db.Column(db.Numeric(10, 2), nullable=False,)
     quantity = db.Column(db.Integer(), nullable=False)
 
     delivery = db.relationship("Delivery", back_populates="delivery_itens")
     order_item = db.relationship("OrderItem", back_populates="delivery_items")
+
+    def calculate_totals(self, order_item):
+        self.cubage = order_item.cubage * self.quantity
+        self.weight = order_item.weight * self.quantity
+

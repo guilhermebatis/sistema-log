@@ -8,6 +8,26 @@ from sqlalchemy import func, select
 from app.extensions import db
 
 
+def _calculate_delivery_item_totals(delivery_item: DeliveryItem):
+
+    order_item = db.session.get(
+        OrderItem,
+        delivery_item.order_item_id
+    )
+
+    if order_item is None:
+        flash('Item da ordem não encontrado.', 'danger')
+        return False
+
+    if order_item.weight is None or order_item.cubage is None:
+        flash('O item da ordem não possui peso ou cubagem definidos.', 'danger')
+        return False
+
+    delivery_item.calculate_totals(order_item)
+
+    return True
+
+
 def _validate_delivery_item(delivery_item: DeliveryItem):
     if delivery_item.order_item_id is None:
         flash('Não foi possivel criar o item da entrega, a precisa do item', 'danger')
@@ -17,12 +37,6 @@ def _validate_delivery_item(delivery_item: DeliveryItem):
         return False
     if not delivery_item.quantity or delivery_item.quantity <= 0:
         flash('Não foi possivel criar o item da entrega, a quantidade precisa ser positiva', 'danger')
-        return False
-    if not delivery_item.cubage or delivery_item.cubage <= 0:
-        flash('Não foi possivel criar o item da entrega, a cubagem precisa ser positiva', 'danger')
-        return False
-    if not delivery_item.weight or delivery_item.weight <= 0:
-        flash('Não foi possivel criar o item da entrega, o peso precisa ser positiva', 'danger')
         return False
     return True
 
@@ -88,19 +102,27 @@ def _validate_delivery_item_relations_and_limits(delivery_item: DeliveryItem):
             DeliveryItem.id != delivery_item.id
         )
 
-    total_item_delivery_data = db.session.execute(query).one()
+    total_order_item_data = db.session.execute(query).one()
 
+    max_weight = ordem_item_data.weight * ordem_item_data.quantity
+    max_cubage = ordem_item_data.cubage * ordem_item_data.quantity
 
-    if (delivery_item.quantity + total_item_delivery_data.quantity) > ordem_item_data.quantity:
-        flash('A quantidade do item não pode ser maior do que a quantidade solicitada.', 'danger')
+    if (
+            delivery_item.quantity + total_order_item_data.quantity
+    ) > ordem_item_data.quantity:
+        flash('A quantidade ultrapassa a quantidade solicitada.', 'danger')
         return False
 
-    if (delivery_item.weight + total_item_delivery_data.weight) > ordem_item_data.weight:
-        flash('O peso do item não pode ser maior do que a peso solicitada.', 'danger')
+    if (
+            delivery_item.weight + total_order_item_data.weight
+    ) > max_weight:
+        flash('O peso ultrapassa o peso solicitado.', 'danger')
         return False
 
-    if (delivery_item.cubage + total_item_delivery_data.cubage) > ordem_item_data.cubage:
-        flash('A cubagem do item não pode ser maior do que a cubagem solicitada.', 'danger')
+    if (
+            delivery_item.cubage + total_order_item_data.cubage
+    ) > max_cubage:
+        flash('A cubagem ultrapassa a cubagem solicitada.', 'danger')
         return False
 
     return True
@@ -109,6 +131,9 @@ def _validate_delivery_item_relations_and_limits(delivery_item: DeliveryItem):
 def create_delivery_item_service(delivery_item: DeliveryItem):
 
     if not _validate_delivery_item(delivery_item):
+        return False
+
+    if not _calculate_delivery_item_totals(delivery_item):
         return False
 
     if not _validate_delivery_item_relations_and_limits(delivery_item):
@@ -134,6 +159,9 @@ def update_delivery_item_service(delivery_item: DeliveryItem):
         return False
 
     if not _validate_delivery_item(delivery_item):
+        return False
+
+    if not _calculate_delivery_item_totals(delivery_item):
         return False
 
     if not _validate_delivery_item_relations_and_limits(delivery_item):

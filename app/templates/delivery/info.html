@@ -141,6 +141,74 @@
 
     </div>
 
+    <!-- ITENS ENTREGA -->
+
+    <div class="info-card">
+        <div class="top-bar">
+            <h2>Itens da Entrega</h2>
+
+            <a
+                href="{{ url_for('delivery_itens.create_delivery_itens', delivery_id=deliveries.id) }}"
+                class="btn"
+            >
+                Adicionar item
+            </a>
+        </div>
+
+        {% if deliveries.delivery_itens %}
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Item da Ordem</th>
+                        <th>Quantidade</th>
+                        <th>Peso</th>
+                        <th>Cubagem</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for item in deliveries.delivery_itens %}
+                        <tr>
+                            <td>{{ item.id }}</td>
+                            <td>{{ item.order_item.description or '-' }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>{{ item.weight }}</td>
+                            <td>{{ item.cubage }}</td>
+
+                            <td>
+                                <div class="actions">
+                                    <a
+                                        class="btn"
+                                        href="{{ url_for('delivery_itens.update_delivery_itens', id=item.id) }}"
+                                    >
+                                        Editar
+                                    </a>
+
+                                    <form
+                                        method="POST"
+                                        action="{{ url_for('delivery_itens.delete_delivery_itens', id=item.id) }}"
+                                    >
+                                        <button type="submit" class="action-btn delete-btn">
+                                            Excluir
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        {% else %}
+
+            <p>Esta entrega ainda não possui itens cadastrados.</p>
+
+        {% endif %}
+    </div>
+
 
     <!-- MOTORISTA -->
 
