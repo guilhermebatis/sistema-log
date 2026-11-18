@@ -1,9 +1,10 @@
 from flask import Flask
 from .config import Config
-from .extensions import db, migrate
+from .extensions import db, migrate, login_manager
 from sqlalchemy import text
 from app.routes.health import health_bp
 from app import models
+from app import auth
 from app.routes.clients import client_bp
 from app.routes.vehicle import vehicle_bp
 from app.routes.driver import  driver_bp
@@ -25,6 +26,9 @@ def create_app(test_config=None):
     migrate.init_app(app, db)
     with app.app_context():
         db.session.execute(text("SELECT 1"))
+
+    # LOGIN
+    login_manager.init_app(app)
 
     # BLUEPRINT
     app.register_blueprint(health_bp)
