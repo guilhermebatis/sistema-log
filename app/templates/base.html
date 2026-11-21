@@ -2,75 +2,77 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Base</title>
+    <title>LOG Logística</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
+
 <body>
 
+    {% if current_user.is_authenticated %}
+
     <nav>
-        <div><h1>LOG Logistica</h1></div>
-
         <div>
-            <div class="nav-item">
-                <a href="#">Clientes</a>
-
-                <div class="dropdown">
-                    <a href="{{ url_for('client.client') }}">Clientes</a>
-                    <a href="{{ url_for('client.create_client') }}">Criar cliente</a>
-                </div>
-            </div>
+            <h1>LOG Logística</h1>
         </div>
-        <div>
-            <div class="nav-item">
-                <a href="#">Veiculos</a>
 
-                <div class="dropdown">
-                    <a href="{{ url_for('vehicle.index') }}">Veiculos</a>
-                    <a href="{{ url_for('vehicle.create_vehicle') }}">Criar veiculo</a>
-                </div>
-            </div>
-        </div>
-        <div>
-            <div class="nav-item">
-                <a href="#">Motoristas</a>
-
-                <div class="dropdown">
-                    <a href="{{ url_for('driver.index') }}">Motoristas</a>
-                    <a href="{{ url_for('driver.driver_create') }}">Criar Motoristas</a>
-                </div>
-            </div>
-        </div>
-        <div>
-            <div class="nav-item">
-                <a href="#">Ordem de serviço</a>
-
-                <div class="dropdown">
-                    <a href="{{ url_for('orders.index') }}">Ordens</a>
-                    <a href="{{ url_for('orders.create_order') }}">Criar Ordem</a>
-                </div>
+        <div class="nav-item">
+            <a href="#">Clientes</a>
+            <div class="dropdown">
+                <a href="{{ url_for('client.client') }}">Clientes</a>
+                <a href="{{ url_for('client.create_client') }}">Criar cliente</a>
             </div>
         </div>
 
-        <div>
-            <div class="nav-item">
-                <a href="#">Entregas</a>
-
-                <div class="dropdown">
-                    <a href="{{ url_for('delivery.index') }}">Entregas</a>
-                    <a href="{{ url_for('delivery.create_delivery') }}">Criar Entregas</a>
-                    <a href="{{ url_for('delivery_itens.index') }}">itens</a>
-                     <a href="{{ url_for('delivery_itens.create_delivery_itens') }}">Criar itens</a>
-                </div>
+        <div class="nav-item">
+            <a href="#">Veículos</a>
+            <div class="dropdown">
+                <a href="{{ url_for('vehicle.index') }}">Veículos</a>
+                <a href="{{ url_for('vehicle.create_vehicle') }}">Criar veículo</a>
             </div>
         </div>
 
+        <div class="nav-item">
+            <a href="#">Motoristas</a>
+            <div class="dropdown">
+                <a href="{{ url_for('driver.index') }}">Motoristas</a>
+                <a href="{{ url_for('driver.driver_create') }}">Criar motorista</a>
+            </div>
+        </div>
+
+        <div class="nav-item">
+            <a href="#">Ordem de serviço</a>
+            <div class="dropdown">
+                <a href="{{ url_for('orders.index') }}">Ordens</a>
+                <a href="{{ url_for('orders.create_order') }}">Criar ordem</a>
+            </div>
+        </div>
+
+        <div class="nav-item">
+            <a href="#">Entregas</a>
+            <div class="dropdown">
+                <a href="{{ url_for('delivery.index') }}">Entregas</a>
+                <a href="{{ url_for('delivery.create_delivery') }}">Criar entrega</a>
+                <a href="{{ url_for('delivery_itens.index') }}">Itens</a>
+                <a href="{{ url_for('delivery_itens.create_delivery_itens') }}">Criar itens</a>
+            </div>
+        </div>
+
+        <div class="nav-item">
+            <a href="#">{{ current_user.name }}</a>
+            <div class="dropdown">
+                <a href="{{ url_for('auth.logout') }}">Sair</a>
+            </div>
+        </div>
 
     </nav>
 
-        {% for category, message in get_flashed_messages(with_categories=true) %}
-           <div class="message {{ category }}">{{ message }}</div>
-        {% endfor %}
+    {% endif %}
+
+    {% for category, message in get_flashed_messages(with_categories=true) %}
+        <div class="message {{ category }}">{{ message }}</div>
+    {% endfor %}
 
     {% block content %}
     {% endblock %}

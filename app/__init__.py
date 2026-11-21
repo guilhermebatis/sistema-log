@@ -12,6 +12,8 @@ from app.routes.orders import orders_bp
 from app.routes.order_items import order_items_bp
 from app.routes.delivery import delivery_bp
 from app.routes.delivery_itens import delivery_itens_bp
+from app.routes.home import home_bp
+from app.routes.auth import auth_bp
 
 def create_app(test_config=None):
     # APP
@@ -39,5 +41,7 @@ def create_app(test_config=None):
     app.register_blueprint(order_items_bp)
     app.register_blueprint(delivery_bp)
     app.register_blueprint(delivery_itens_bp)
+    app.register_blueprint(home_bp)
+    app.register_blueprint(auth_bp)
 
     return app

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, redirect, url_for
+from flask import Blueprint, request, redirect, url_for, render_template
 from app.extensions import db
 from app.models import User
 from werkzeug.security import check_password_hash
@@ -27,3 +27,7 @@ def login():
         login_user(user)
 
         return redirect(url_for('home.index'))
+
+
+    if request.method == 'GET':
+        return render_template('auth/login.html')
