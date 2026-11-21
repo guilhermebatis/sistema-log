@@ -3,7 +3,7 @@ from app.extensions import db
 from app.models import User
 from werkzeug.security import check_password_hash
 from flask import flash
-from flask_login import login_user
+from flask_login import login_user, logout_user, login_required
 
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -31,3 +31,11 @@ def login():
 
     if request.method == 'GET':
         return render_template('auth/login.html')
+
+
+@auth_bp.route('/logout', methods=['POST'])
+@login_required
+def logout():
+    logout_user()
+    flash('Você saiu do sistema.', 'success')
+    return redirect(url_for('auth.login'))

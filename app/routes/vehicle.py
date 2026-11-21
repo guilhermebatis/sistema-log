@@ -1,21 +1,24 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from sqlalchemy.exc import IntegrityError
 
 from app.extensions import db
 from app.models import Vehicle
 from app.models.vehicle import FuelType, VehicleStatus
 from service.vehicle_layer import create_vehicle_service, update_vehicle_service, delete_vehicle_service
+from flask_login import login_required
+
 
 vehicle_bp = Blueprint('vehicle', __name__, url_prefix='/vehicle')
 
 
 @vehicle_bp.route('/', methods=['GET'])
+@login_required
 def index():
     data = db.session.query(Vehicle).all()
     return render_template('vehicle/index.html', data=data)
 
 
 @vehicle_bp.route('/create', methods=['GET', 'POST'])
+@login_required
 def create_vehicle():
     if request.method == 'POST':
 
@@ -62,6 +65,7 @@ def create_vehicle():
 
 
 @vehicle_bp.route('/<int:id>/delete', methods=['POST'])
+@login_required
 def delete_vehicle(id):
 
     data = db.session.get(Vehicle, id)
@@ -76,6 +80,7 @@ def delete_vehicle(id):
 
 
 @vehicle_bp.route('/<int:id>/update', methods=['GET', 'POST'])
+@login_required
 def update_vehicle(id):
     if request.method == 'GET':
         data = db.session.get(Vehicle, id)

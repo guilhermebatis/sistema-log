@@ -1,23 +1,25 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 
 from app import db
-from app.models import Delivery
-from app.models.order_service import OrderService, OrderStatus, OrderItem
+from app.models.order_service import OrderService, OrderStatus
 from app.models.client import Client
 from service.order_layer import create_order_service, update_order_service, delete_order_service
 from decimal import Decimal
+from flask_login import login_required
 
 
 orders_bp = Blueprint('orders', __name__, url_prefix='/orders')
 
 
 @orders_bp.route('/')
+@login_required
 def index():
     data = db.session.query(OrderService).all()
     return render_template('orders/index.html', data=data)
 
 
 @orders_bp.route('/<int:order_id>/info', methods=['GET'])
+@login_required
 def order_info(order_id):
 
     order_data = db.session.get(OrderService, order_id)
@@ -35,6 +37,7 @@ def order_info(order_id):
 
 
 @orders_bp.route('/create', methods=['GET', 'POST'])
+@login_required
 def create_order():
     if request.method == 'GET':
         clients = db.session.query(Client).all()
@@ -72,6 +75,7 @@ def create_order():
 
 
 @orders_bp.route('/<int:order_id>/update', methods=['GET', 'POST'])
+@login_required
 def update_order(order_id):
 
     if request.method == 'GET':
@@ -121,6 +125,7 @@ def update_order(order_id):
 
 
 @orders_bp.route('/<int:order_id>/delete', methods=['POST'])
+@login_required
 def delete_order(order_id):
 
     data = db.session.get(OrderService, order_id)

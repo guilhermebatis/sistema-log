@@ -31,6 +31,9 @@ def create_app(test_config=None):
 
     # LOGIN
     login_manager.init_app(app)
+    login_manager.login_view = 'auth.login'
+    login_manager.login_message = 'Faça login para acessar esta página.'
+    login_manager.login_message_category = 'warning'
 
     # BLUEPRINT
     app.register_blueprint(health_bp)

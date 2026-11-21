@@ -3,10 +3,13 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from app.extensions import db
 from app.models import Client
 from service.client_layer import create_client_service, update_client_service, delete_client_service
+from flask_login import login_required
+
 
 client_bp = Blueprint('client', __name__, url_prefix='/client')
 
 @client_bp.route('/create', methods=['GET', 'POST'])
+@login_required
 def create_client():
     if request.method == 'POST':
         client_name = request.form.get('name', '').strip()
@@ -29,12 +32,14 @@ def create_client():
 
 
 @client_bp.route('/', methods=['GET'])
+@login_required
 def client():
     data = db.session.query(Client).all()
     return render_template('clients/get.html', data=data)
 
 
 @client_bp.route('/<int:id>/delete', methods=['POST'])
+@login_required
 def client_delete(id):
 
     data = db.session.query(Client).filter(Client.id == id).one_or_none()
@@ -46,6 +51,7 @@ def client_delete(id):
 
 
 @client_bp.route('/<int:id>/update', methods=['GET', 'POST'])
+@login_required
 def client_update(id):
     if request.method == 'GET':
         data = db.session.get(Client, id)

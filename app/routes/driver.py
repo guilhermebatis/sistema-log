@@ -5,16 +5,19 @@ from app.models.driver import Driver
 from app.models.driver import DriverStatus, DrivingLicenceCategory
 from datetime import date, datetime
 from service.driver_layer import create_driver_service, update_driver_service, delete_driver_service
+from flask_login import login_required
 
 driver_bp = Blueprint('driver', __name__, url_prefix='/driver')
 
 @driver_bp.route('/')
+@login_required
 def index():
     data = db.session.query(Driver).all()
     return render_template('driver/index.html', data=data)
 
 
 @driver_bp.route('/create', methods=['GET', 'POST'])
+@login_required
 def driver_create():
     if request.method == 'POST':
         # recive data from form
@@ -57,6 +60,7 @@ def driver_create():
 
 
 @driver_bp.route('/<int:id>/update', methods=['GET', 'POST'])
+@login_required
 def driver_update(id):
     if request.method == 'GET':
 
@@ -111,6 +115,7 @@ def driver_update(id):
 
 
 @driver_bp.route('/<int:id>/delete', methods=['POST'])
+@login_required
 def driver_delete(id):
     data = db.session.get(Driver, id)
 

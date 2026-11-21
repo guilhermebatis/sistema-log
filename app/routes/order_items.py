@@ -4,18 +4,21 @@ from app import db
 from app.models.order_service import OrderService, OrderItem
 from service.order_layer import create_order_item_service, update_order_item_service, delete_order_item_service
 from decimal import Decimal
+from flask_login import login_required
 
 
 order_items_bp  = Blueprint('order_items', __name__, url_prefix='/order_items')
 
 
 @order_items_bp.route("/")
+@login_required
 def index():
     data = db.session.query(OrderItem).all()
     return render_template('order_item/index.html', data=data)
 
 
 @order_items_bp.route("/create", methods=['GET', 'POST'])
+@login_required
 def create_order_item():
     if request.method == 'GET':
         order_services = db.session.query(OrderService).all()
@@ -60,6 +63,7 @@ def create_order_item():
 
 
 @order_items_bp.route("/<int:order_item_id>/update", methods=['GET', 'POST'])
+@login_required
 def update_order_item(order_item_id):
     if request.method == 'GET':
         order_item_data = db.session.get(OrderItem, order_item_id)
@@ -121,6 +125,7 @@ def update_order_item(order_item_id):
 
 
 @order_items_bp.route("/<int:order_item_id>/delete", methods=['POST'])
+@login_required
 def delete_order_item(order_item_id):
     data = db.session.get(OrderItem, order_item_id)
 

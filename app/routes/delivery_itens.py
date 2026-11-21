@@ -4,12 +4,13 @@ from app.extensions import db
 from app.models.delivery import Delivery, DeliveryItem
 from app.models.order_service import OrderItem
 from service.delivery_layer import create_delivery_item_service, update_delivery_item_service, delete_delivery_item_service
-from decimal import Decimal
+from flask_login import login_required
 
 delivery_itens_bp = Blueprint('delivery_itens', __name__, url_prefix='/delivery_itens')
 
 
 @delivery_itens_bp.route('/')
+@login_required
 def index():
     delivery_itens_data = db.session.query(DeliveryItem).all()
     delivery_data = db.session.query(Delivery).all()
@@ -20,6 +21,7 @@ def index():
 
 
 @delivery_itens_bp.route('<int:id>/info', methods=['GET'])
+@login_required
 def info(id):
     delivery_itens_data = db.session.get(DeliveryItem, id)
 
@@ -35,6 +37,7 @@ def info(id):
 
 
 @delivery_itens_bp.route('/create', methods=['GET', 'POST'])
+@login_required
 def create_delivery_itens():
     if request.method == 'GET':
         deliveries_data  = db.session.query(Delivery).all()
@@ -74,6 +77,7 @@ def create_delivery_itens():
 
 
 @delivery_itens_bp.route('<int:id>/update', methods=['GET', 'POST'])
+@login_required
 def update_delivery_itens(id):
     if request.method == 'GET':
 
@@ -122,6 +126,7 @@ def update_delivery_itens(id):
 
 
 @delivery_itens_bp.route('/<int:id>/delete', methods=['POST'])
+@login_required
 def delete_delivery_itens(id):
     delivery_item = db.session.get(DeliveryItem, id)
     if delete_delivery_item_service(delivery_item):

@@ -407,3 +407,34 @@ tr:hover {
     color: #94a3b8;
     font-size: 12px;
 }
+
+/* Formulário de logout no dropdown */
+.logout-form {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+/* Botão de sair */
+.logout-button {
+    display: block;
+    width: 100%;
+    padding: 12px 16px;
+
+    background: transparent;
+    border: none;
+    border-radius: 0;
+
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: normal;
+    text-align: left;
+
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.logout-button:hover {
+    background: #f1f5f9;
+}
