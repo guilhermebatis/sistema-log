@@ -1,21 +1,81 @@
+{% extends "base.html" %}
 
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema Logístico</title>
-</head>
+{% block content %}
 <body>
+    <main class="dashboard-container">
 
-    <header>
-        <h1>Sistema Logístico</h1>
-    </header>
+        <section class="dashboard-welcome">
+            <div>
+                <h2>Dashboard</h2>
+                <p>Acompanhe os principais indicadores da sua operação.</p>
+            </div>
+        </section>
 
-    <main>
-        <h2>Bem-vindo, {{ current_user.name }}!</h2>
-        <p>Você está autenticado no sistema.</p>
+        <section class="dashboard-section">
+            <h3>Visão geral</h3>
+
+            <div class="dashboard-grid">
+
+                <article class="dashboard-card">
+                    <div class="card-icon blue">CL</div>
+                    <div>
+                        <span class="card-label">Clientes cadastrados</span>
+                        <strong class="card-value">{{ data.clients }}</strong>
+                    </div>
+                </article>
+
+                <article class="dashboard-card">
+                    <div class="card-icon purple">VE</div>
+                    <div>
+                        <span class="card-label">Veículos cadastrados</span>
+                        <strong class="card-value">{{ data.vehicles }}</strong>
+                    </div>
+                </article>
+
+                <article class="dashboard-card">
+                    <div class="card-icon orange">PE</div>
+                    <div>
+                        <span class="card-label">Pedidos cadastrados</span>
+                        <strong class="card-value">{{ data.orders }}</strong>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+        <section class="dashboard-section">
+            <h3>Acompanhamento de entregas</h3>
+
+            <div class="dashboard-grid">
+
+                <article class="dashboard-card">
+                    <div class="card-icon orange">PE</div>
+                    <div>
+                        <span class="card-label">Entregas pendentes</span>
+                        <strong class="card-value">{{ data.pending_deliveries }}</strong>
+                    </div>
+                </article>
+
+                <article class="dashboard-card">
+                    <div class="card-icon blue">EA</div>
+                    <div>
+                        <span class="card-label">Entregas em andamento</span>
+                        <strong class="card-value">{{ data.in_progress_deliveries }}</strong>
+                    </div>
+                </article>
+
+                <article class="dashboard-card">
+                    <div class="card-icon green">EC</div>
+                    <div>
+                        <span class="card-label">Entregas concluídas</span>
+                        <strong class="card-value">{{ data.completed_deliveries }}</strong>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
     </main>
 
 </body>
-</html>
+{% endblock %}
