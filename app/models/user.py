@@ -15,3 +15,6 @@ class User(UserMixin, db.Model):
     created_at = db.Column(db.DateTime(),
                            nullable=False,
                            default=lambda: datetime.now(timezone.utc).replace(tzinfo=None))
+
+    #ROM
+    financial_entries = db.relationship("FinancialEntry", back_populates="user")
