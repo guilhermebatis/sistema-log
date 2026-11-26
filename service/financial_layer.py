@@ -149,6 +149,10 @@ def create_financial_entry(financial_entry: FinancialEntry,
         return False
 
     try:
+        for financial_installment in financial_installments:
+            financial_installment.status = StatusFinancialInstallment.PENDING
+            financial_installment.financial_entry = financial_entry
+
         db.session.add(financial_entry)
 
         for financial_installment in financial_installments:
