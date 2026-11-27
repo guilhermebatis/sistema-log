@@ -110,7 +110,7 @@ def _validate_installments_total_update(
                     found = True
                     break
             if not found:
-                flash('')
+                flash('Não foi possivel localizar a parcela para atualizar', 'danger')
                 return False
 
     id_total_update = []
@@ -161,11 +161,12 @@ def create_financial_entry(financial_entry: FinancialEntry,
 
         db.session.add_all(financial_installments)
         db.session.commit()
-        flash('Financial entry successfully created!', 'success')
+        flash('Entrada financeira foi criada com sucesso', 'success')
         return True
 
     except IntegrityError:
         db.session.rollback()
+        flash('Error ao criar a entrada financeira', 'danger')
         return False
 
 
@@ -229,23 +230,28 @@ def update_financial_entry(financial_entry: FinancialEntry,
 
         db.session.commit()
 
-        flash('Financial entry successfully updated!', 'success')
+        flash('Entrada financeira atualizada com sucesso!', 'success')
         return True
 
     except IntegrityError:
         db.session.rollback()
+        flash('Error ao atualizar a entrada financeira', 'danger')
         return False
 
 
 def _validate_financial_payment(financial_payment: FinancialPayment):
     if financial_payment.financial_installment is None:
+        flash('Não exitem pacelas pendentes', 'danger')
         return False
     if financial_payment.financial_installment.status == StatusFinancialInstallment.PAID:
+        flash('Pagamento ja realizado', 'danger')
         return False
 
     if financial_payment.payment_date is None:
+        flash('O campo data do pagamento e obrigatorio', 'danger')
         return False
     if financial_payment.created_by is None:
+        flash('O campo criado por e obrigatorio', 'danger')
         return False
     return True
 
@@ -258,8 +264,9 @@ def create_financial_payment(financial_payment: FinancialPayment):
         db.session.add(financial_payment)
         financial_payment.financial_installment.status = StatusFinancialInstallment.PAID
         db.session.commit()
-        flash('Financial payment successfully created!', 'success')
+        flash('Pagamento foi realizado com sucesso', 'success')
         return True
     except IntegrityError:
         db.session.rollback()
+        flash('Error ao criar o pagamento', 'danger')
         return False

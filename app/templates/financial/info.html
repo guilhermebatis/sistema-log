@@ -1,0 +1,117 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+
+    <div class="top-bar">
+        <div>
+            <h1>Detalhes da conta</h1>
+            <p>Informações financeiras e histórico de parcelas.</p>
+        </div>
+
+        <a href="{{ url_for('financial.update_entry', id=financial_entry_data.id) }}"
+           class="btn">
+            Editar conta
+        </a>
+    </div>
+
+    <div class="info-card">
+
+        <h2>Informações gerais</h2>
+
+        <div class="info-grid">
+
+            <div class="info-item">
+                <span class="info-label">Descrição</span>
+                <p>{{ financial_entry_data.description }}</p>
+            </div>
+
+            <div class="info-item">
+                <span class="info-label">Tipo</span>
+                <p>
+                    {% if financial_entry_data.type.value == 'RECEIVABLE' %}
+                        A receber
+                    {% else %}
+                        A pagar
+                    {% endif %}
+                </p>
+            </div>
+
+            <div class="info-item">
+                <span class="info-label">Valor total</span>
+                <p>R$ {{ "%.2f"|format(financial_entry_data.total_amount) }}</p>
+            </div>
+
+            <div class="info-item">
+                <span class="info-label">Data de criação</span>
+                <p>{{ financial_entry_data.created_at.strftime('%d/%m/%Y') }}</p>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="info-card">
+
+        <h2>Parcelas</h2>
+
+        {% if financial_entry_data.financial_installments %}
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parcela</th>
+                        <th>Valor</th>
+                        <th>Vencimento</th>
+                        <th>Situação</th>
+                        <th>Pagamento</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for installment in financial_entry_data.financial_installments %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+
+                        <td>R$ {{ "%.2f"|format(installment.amount) }}</td>
+
+                        <td>{{ installment.due_date.strftime('%d/%m/%Y') }}</td>
+
+                        <td>
+                            {% if installment.status.value == 'PAID' %}
+                                Paga
+                            {% else %}
+                                Pendente
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if installment.financial_payment %}
+                                {{ installment.financial_payment.payment_date.strftime('%d/%m/%Y') }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% else %}
+        <div class="empty">
+            <p>Esta conta não possui parcelas cadastradas.</p>
+        </div>
+        {% endif %}
+
+    </div>
+
+    <div class="actions">
+        <a href="{{ url_for('financial.index') }}" class="cancel">
+            Voltar
+        </a>
+    </div>
+
+</div>
+{% endblock %}

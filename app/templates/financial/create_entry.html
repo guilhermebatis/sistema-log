@@ -1,0 +1,91 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+
+    <div class="top-bar">
+        <div>
+            <h1>Nova conta financeira</h1>
+            <p>Cadastre uma conta a pagar ou receber.</p>
+        </div>
+    </div>
+
+    <div class="form-page">
+        <form method="POST">
+
+            <div class="field">
+                <label for="financial_entry_type">Tipo de operação</label>
+
+                <select name="financial_entry_type"
+                        id="financial_entry_type"
+                        required>
+                    <option value="">Selecione o tipo</option>
+                    <option value="RECEIVABLE">A receber</option>
+                    <option value="PAYABLE">A pagar</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="financial_entry_description">Descrição</label>
+
+                <input type="text"
+                       name="financial_entry_description"
+                       id="financial_entry_description"
+                       maxlength="200"
+                       placeholder="Ex.: Pagamento de fornecedor"
+                       required>
+            </div>
+
+            <div class="field">
+                <label for="financial_entry_total_amount">Valor total (R$)</label>
+
+                <input type="number"
+                       name="financial_entry_total_amount"
+                       id="financial_entry_total_amount"
+                       step="0.01"
+                       min="0.01"
+                       placeholder="0,00"
+                       required>
+            </div>
+
+            <hr>
+
+            <h3>Primeira parcela</h3>
+
+            <div class="field">
+                <label for="financial_installment_amount">Valor da parcela (R$)</label>
+
+                <input type="number"
+                       name="financial_installment_amount"
+                       id="financial_installment_amount"
+                       step="0.01"
+                       min="0.01"
+                       placeholder="0,00"
+                       required>
+            </div>
+
+            <div class="field">
+                <label for="financial_installment_due_date">Data de vencimento</label>
+
+                <input type="date"
+                       name="financial_installment_due_date"
+                       id="financial_installment_due_date"
+                       required>
+            </div>
+
+            <div class="actions">
+                <button type="submit" class="btn">
+                    Salvar conta
+                </button>
+
+                <a href="{{ url_for('financial.index') }}" class="cancel">
+                    Cancelar
+                </a>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+{% endblock %}

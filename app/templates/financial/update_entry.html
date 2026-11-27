@@ -1,0 +1,94 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+
+    <div class="top-bar">
+        <div>
+            <h1>Editar conta financeira</h1>
+            <p>Atualize as informações da conta.</p>
+        </div>
+    </div>
+
+    <div class="form-page">
+        <form method="POST">
+
+            <div class="field">
+                <label for="financial_entry_type">Tipo de operação</label>
+
+                <select name="financial_entry_type"
+                        id="financial_entry_type"
+                        required>
+                    <option value="RECEIVABLE"
+                        {% if financial_entry_data.type.value == 'RECEIVABLE' %}selected{% endif %}>
+                        A receber
+                    </option>
+
+                    <option value="PAYABLE"
+                        {% if financial_entry_data.type.value == 'PAYABLE' %}selected{% endif %}>
+                        A pagar
+                    </option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="financial_entry_description">Descrição</label>
+
+                <input type="text"
+                       name="financial_entry_description"
+                       id="financial_entry_description"
+                       value="{{ financial_entry_data.description }}"
+                       maxlength="200"
+                       required>
+            </div>
+
+            <div class="field">
+                <label for="financial_entry_total_amount">Valor total (R$)</label>
+
+                <input type="number"
+                       name="financial_entry_total_amount"
+                       id="financial_entry_total_amount"
+                       value="{{ financial_entry_data.total_amount }}"
+                       step="0.01"
+                       min="0.01"
+                       required>
+            </div>
+
+            <hr>
+
+            <h3>Parcelas cadastradas</h3>
+
+            {% for installment in financial_installment_data %}
+            <div class="info-item">
+                <p>
+                    **Parcela #{{ loop.index }}**
+                </p>
+
+                <p>Valor: R$ {{ "%.2f"|format(installment.amount) }}</p>
+
+                <p>Vencimento: {{ installment.due_date.strftime('%d/%m/%Y') }}</p>
+
+                <p>
+                    Situação:
+                    {% if installment.status.value == 'PAID' %}
+                        Paga
+                    {% else %}
+                        Pendente
+                    {% endif %}
+                </p>
+            </div>
+            {% endfor %}
+
+            <div class="actions">
+                <a href="{{ url_for('financial.info', id=financial_entry_data.id) }}"
+                   class="cancel">
+                    Voltar aos detalhes
+                </a>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+{% endblock %}

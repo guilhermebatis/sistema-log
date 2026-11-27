@@ -1,0 +1,80 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+
+    <div class="top-bar">
+        <div>
+            <h1>Controle Financeiro</h1>
+            <p>Gerencie suas contas a pagar e receber.</p>
+        </div>
+
+        <a href="{{ url_for('financial.create_entry') }}" class="btn">
+            Nova conta
+        </a>
+    </div>
+
+    <div class="table-container">
+        {% if financial_entry_data %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Descrição</th>
+                    <th>Tipo</th>
+                    <th>Valor total</th>
+                    <th>Parcelas</th>
+                    <th>Data de criação</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for entry in financial_entry_data %}
+                <tr>
+                    <td>{{ entry.description }}</td>
+
+                    <td>
+                        {% if entry.type.value == 'RECEIVABLE' %}
+                            A receber
+                        {% else %}
+                            A pagar
+                        {% endif %}
+                    </td>
+
+                    <td>R$ {{ "%.2f"|format(entry.total_amount) }}</td>
+
+                    <td>{{ entry.financial_installments|length }}</td>
+
+                    <td>{{ entry.created_at.strftime('%d/%m/%Y') }}</td>
+
+                    <td>
+                        <div class="actions">
+                            <a href="{{ url_for('financial.info', id=entry.id) }}"
+                               class="action-btn">
+                                Detalhes
+                            </a>
+
+                            <a href="{{ url_for('financial.update_entry', id=entry.id) }}"
+                               class="action-btn edit-btn">
+                                Editar
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% else %}
+        <div class="empty">
+            <p>Nenhuma conta financeira cadastrada.</p>
+            <a href="{{ url_for('financial.create_entry') }}" class="btn">
+                Cadastrar primeira conta
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}
